@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empanadas ED - Inicio</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio">
+                <img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED">
+            </a>
+            <h1 class="brand-title">Empanadas ED</h1>
+            <nav class="site-nav">
+                <a href="#">Catálogo</a>
+                <a href="#">Iniciar Sesión</a>
+                <a href="#" class="cta-link">Registrarse</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="hero">
+                <h1>¡Bienvenido a Empanadas ED!</h1>
+                <p>“Pusieron por nombre al altar ED porque testimonio es entre nosotros que Jehová es Dios” (Josué 22:34)</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn btn-primary">🛍️ Ver Catálogo</a>
+                    <a href="#" class="btn btn-secondary">📝 Crear Cuenta</a>
+                </div>
+            </section>
+
+            <h2 class="section-title">¿Por Qué Elegirnos?</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🥟</div>
+                    <h3>Productos Frescos</h3>
+                    <p>Empanadas elaboradas diariamente con ingredientes de la más alta calidad.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🚚</div>
+                    <h3>Entrega Rápida</h3>
+                    <p>Recibe tus pedidos en el menor tiempo posible, frescos y calientes.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Precios Competitivos</h3>
+                    <p>Aprovecha nuestras ofertas especiales y promociones exclusivas.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Atención Personalizada</h3>
+                    <p>Nuestro equipo está listo para ayudarte con cualquier pregunta.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Compras Seguras</h3>
+                    <p>Transacciones protegidas con los mejores estándares de seguridad.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>5 Estrellas</h3>
+                    <p>Más de 1000 clientes satisfechos y confiando en nosotros.</p>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <h2>Nuestro Catálogo</h2>
+                <p>Descubre nuestra variedad de deliciosas empanadas con rellenos tradicionales e innovadores y más productos.</p>
+                <a href="#" class="btn btn-primary">Explorar Ahora</a>
+            </div>
+
+            <h2 class="section-title">Información</h2>
+            <div class="info-grid">
+                <div class="info-box">
+                    <h4>📍 Ubicación</h4>
+                    <p>Calle Principal #123, Centro Comercial ED, Colombia.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>📞 Contacto</h4>
+                    <p>+57 (300) 1112233 - disponible 24/7.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>⏰ Horario</h4>
+                    <p>Lunes a Domingo: 10:00 AM - 9:00 PM.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>✉️ Email</h4>
+                    <p>contacto@empanadasED.com</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 - Empanadas ED - Todos los derechos reservados</p>
+        <p style="margin: 8px 0 0; color: #bbb;">Hecho con ❤️ para nuestros clientes</p>
+    </footer>
+</body>
+</html>
