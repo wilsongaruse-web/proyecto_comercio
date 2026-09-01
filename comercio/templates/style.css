@@ -1,0 +1,15 @@
+/* Estilos CSS para el parallax */
+.parallax-section {
+  /* Ruta de tu imagen de fondo */
+  background-image: url('fondo.jpg');
+  
+  /* Altura de la sección */
+  height: 500vh;
+  width: 500vw;
+  
+  /* Propiedades clave del Parallax */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
