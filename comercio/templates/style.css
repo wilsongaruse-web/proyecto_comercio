@@ -1,15 +1,35 @@
-/* Estilos CSS para el parallax */
 .parallax-section {
   /* Ruta de tu imagen de fondo */
-  background-image: url('fondo.jpg');
+  background-image: url('fondo1.jpg');
   
-  /* Altura de la sección */
-  height: 500vh;
-  width: 500vw;
+  /* Altura de la sección ajustada a la pantalla */
+  height: 60vh; /* O 500px según prefieras */
+  width: 100%;  /* Corrección: 100% para evitar scroll horizontal */
   
   /* Propiedades clave del Parallax */
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+/* Ajuste recomendado para las imágenes del carrusel */
+.carousel-item img {
+  height: 350px;
+  object-fit: cover;
+}
+/* 1. Limitar la altura del contenedor del carrusel */
+#carouselExample {
+  max-height: 400px; /* Ajusta este valor (ej. 300px o 350px) para cambiar el tamaño general */
+  background-color: #111; /* Fondo oscuro opcional para los bordes si la imagen no ocupa todo el ancho */
+  overflow: hidden;
+}
+
+/* 2. Centrar las imágenes y controlar su escalado */
+.carousel-item img {
+  height: 400px;         /* Debe coincidir con la altura de #carouselExample */
+  width: auto;           /* Mantiene la proporción original */
+  max-width: 100%;       /* Evita que se salga horizontalmente */
+  margin: 0 auto;        /* Centra la imagen horizontalmente */
+  object-fit: contain;   /* Muestra la imagen COMPLETA centrada sin recortar */
 }
