@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }} | Administración</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+     <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio">
+                <img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED">
+            </a>
+            
+            <h1 class="brand-title">Gestión de productos</h1>
+            <nav class="site-nav">
+                <a href="{% url 'gestion_admin:productos_admin' %}">Volver</a>
+                <a href="#">Cerrar sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>{{ titulo }}</h2>
+            <form method="post" class="form-login" style="max-width: 700px;">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="campo">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="error-msg">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn-comprar">Guardar</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

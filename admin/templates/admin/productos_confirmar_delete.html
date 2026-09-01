@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar producto</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio">
+                <img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED">
+            </a>
+            <h1 class="brand-title">Eliminar producto</h1>
+            <nav class="site-nav">
+                <a href="{% url 'gestion_admin:productos_admin' %}">Cancelar</a>
+                <a href="#">Cerrar sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>¿Seguro que deseas eliminar este producto?</h2>
+            <p><strong>{{ producto.nombre }}</strong></p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn-volver" style="background:#b42318;">Sí, eliminar</button>
+                <a href="{% url 'gestion_admin:productos_admin' %}" class="btn-comprar">Cancelar</a>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

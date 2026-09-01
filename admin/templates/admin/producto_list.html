@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos | Administración</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio">
+                <img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED">
+            </a>
+            <h1 class="brand-title">Administración de productos</h1>
+            <nav class="site-nav">
+                <a href="{% url 'gestion_admin:admin_panel' %}">Panel</a>
+                <a href="{% url 'gestion_admin:login' %}">Cerrar sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="mensaje">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin: 20px 0;">
+                <h2>Productos</h2>
+                <a class="btn-comprar" href="{% url 'gestion_admin:producto_nuevo' %}">+ Nuevo producto</a>
+            </div>
+
+            <table style="width:100%; border-collapse:collapse; background:#fff; border-radius:12px; overflow:hidden;">
+                <thead>
+                    <tr style="background:#f7f7f7;">
+                        <th style="padding:10px; text-align:left;">Nombre</th>
+                        <th style="padding:10px; text-align:left;">Categoría</th>
+                        <th style="padding:10px; text-align:left;">Precio</th>
+                        <th style="padding:10px; text-align:left;">Stock</th>
+                        <th style="padding:10px; text-align:left;">Oferta</th>
+                        <th style="padding:10px; text-align:left;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                        <tr>
+                            <td style="padding:10px; border-top:1px solid #eee;">{{ producto.nombre }}</td>
+                            <td style="padding:10px; border-top:1px solid #eee;">{{ producto.categoria }}</td>
+                            <td style="padding:10px; border-top:1px solid #eee;">${{ producto.precio }}</td>
+                            <td style="padding:10px; border-top:1px solid #eee;">{{ producto.stock }}</td>
+                            <td style="padding:10px; border-top:1px solid #eee;">{% if producto.oferta %}Sí{% else %}No{% endif %}</td>
+                            <td style="padding:10px; border-top:1px solid #eee;">
+                                <a href="{% url 'gestion_admin:producto_editar' producto.id %}" class="btn-volver">Editar</a>
+                                <a href="{% url 'gestion_admin:producto_eliminar' producto.id %}" class="btn-volver" style="background:#b42318;">Eliminar</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" style="padding:16px; text-align:center;">No hay productos registrados.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

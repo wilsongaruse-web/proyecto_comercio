@@ -15,7 +15,7 @@
             </a>
             <h1 class="brand-title">Empanadas ED</h1>
             <nav class="site-nav">
-                <a href="#">Catálogo</a>
+                <a href="{% url 'catalogo:catalogo' %}">Catálogo</a>
                 <a href="#">Iniciar Sesión</a>
                 <a href="#" class="cta-link">Registrarse</a>
             </nav>
@@ -28,7 +28,7 @@
                 <h1>¡Bienvenido a Empanadas ED!</h1>
                 <p>“Pusieron por nombre al altar ED porque testimonio es entre nosotros que Jehová es Dios” (Josué 22:34)</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn btn-primary">🛍️ Ver Catálogo</a>
+                    <a href="{% url 'catalogo:catalogo' %}" class="btn btn-primary">🛍️ Ver Catálogo</a>
                     <a href="#" class="btn btn-secondary">📝 Crear Cuenta</a>
                 </div>
             </section>

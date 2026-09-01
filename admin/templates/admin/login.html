@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login administrativo</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio">
+                <span class="logo-mark">ED</span>
+            </a>
+            <h1 class="brand-title">Panel administrativo</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="auth-shell">
+            <div class="auth-card">
+                <h2>Iniciar sesión</h2>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="message error">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" class="form-grid">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
