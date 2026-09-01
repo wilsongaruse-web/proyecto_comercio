@@ -33,3 +33,14 @@
   margin: 0 auto;        /* Centra la imagen horizontalmente */
   object-fit: contain;   /* Muestra la imagen COMPLETA centrada sin recortar */
 }
+/* Altura fija e igual para todas las imágenes de las tarjetas */
+.card-img-top {
+    height: 220px;          /* Ajusta esta altura según tu preferencia */
+    object-fit: cover;      /* Escala la imagen recortando bordes sin deformarla */
+    object-position: center; /* Mantiene el centro de la foto enfocado */
+}
+
+/* Hace que todas las tarjetas de la fila tengan la misma altura general */
+.card {
+    height: 100%;
+}

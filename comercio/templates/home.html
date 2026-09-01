@@ -22,7 +22,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'home' %}">Inicio</a>
+                        <li>> <a class="nav-link active" href="{% url 'home' %}">Inicio</a>
+                        </li>
+                         <li>   <a class="nav-link active" href="{% url 'carrito' %}">Carrito</a>
+                         </li>
                     </li>
                 </ul>
             </div>
@@ -71,15 +74,100 @@
       
     </main>
 
-    <!-- 5. Contenido normal -->
+    <section class="py-5">
+    <div class="container-fluid px-4"> <!-- Usamos container-fluid para más espacio horizontal -->
+        
+        <!-- row-cols-md-3 row-cols-lg-5 distribuye las 5 tarjetas en 1 sola fila en pantallas grandes -->
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-5 g-3">
+            
+            <!-- Tarjeta 1: Carne -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="carne.jpg" class="card-img-top" alt="Empanada de Carne">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title fs-6 fw-bold">Empanada de Carne</h5>
+                            <p class="card-text small">Deliciosa empanada rellena de carne molida.</p>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm w-100 mt-2">Agregar al carrito</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 2: Pollo -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="pollo.jpg" class="card-img-top" alt="Empanada de Pollo">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title fs-6 fw-bold">Empanada de Pollo</h5>
+                            <p class="card-text small">Rellena de pechuga desmechada con guiso.</p>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm w-100 mt-2">Agregar al carrito</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 3: Champiñones -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="champinones.jpg" class="card-img-top" alt="Empanada de Champiñones">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title fs-6 fw-bold">Empanada de Champiñones</h5>
+                            <p class="card-text small">Mezcla de champiñones y queso melt.</p>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm w-100 mt-2">Agregar al carrito</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 4: Ranchera -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="ranchera.jpg" class="card-img-top" alt="Empanada Ranchera">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title fs-6 fw-bold">Empanada Ranchera</h5>
+                            <p class="card-text small">Salchicha ranchera, maíz dulce y queso.</p>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm w-100 mt-2">Agregar al carrito</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 5: Queso -->
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="queso.jpg" class="card-img-top" alt="Empanada de Queso">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title fs-6 fw-bold">Empanada de Queso</h5>
+                            <p class="card-text small">Doble queso derretido crujiente.</p>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm w-100 mt-2">Agregar al carrito</a>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- Cierre de .row -->
+    </div>
+</section>
+
+    <!-- 6. Contenido normal -->
     <section class="py-5 bg-light text-dark">
         <div class="container">
-            <h2>Contenido siguiente</h2>
-            <p>Este es el texto que se desplaza normalmente sobre la página.</p>
+            <h2 style="text-align: center;">CONTACTANOS</h2>
+            <p style="text-align: center;">Whatsapp : 313 - 000 - 00 - 00.</p>
+            <p style="text-align: center;">Correo : info@empanadasdelicia.com</p>
+            <p style="text-align: center;">Fusagasugá/Cundinamarca</p>
         </div>
     </section>
 
     <!-- Bootstrap 5 JS Bundle (Al final del body) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    
+</div>
 </body>
 </html>
