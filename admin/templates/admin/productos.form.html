@@ -23,21 +23,63 @@
     </header>
 
     <main>
-        <div class="container">
-            <h2>{{ titulo }}</h2>
-            <form method="post" enctype="multipart/form-data" class="form-login" style="max-width: 700px;">
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="campo">
-                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                            <div class="error-msg">{{ field.errors }}</div>
-                        {% endif %}
+        <div class="auth-shell">
+            <div class="auth-card">
+                <h2>Registrar nuevo producto</h2>
+                <form method="post" enctype="multipart/form-data" class="form-grid">
+                    {% csrf_token %}
+                    
+                    <div class="form-field">
+                        <label for="id_nombre">Nombre</label>
+                        {{ form.nombre }}
                     </div>
-                {% endfor %}
-                <button type="submit" class="btn-comprar">Guardar</button>
-            </form>
+
+                    <div class="form-field">
+                        <label for="id_precio">Precio</label>
+                        {{ form.precio }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_stock">Stock</label>
+                        {{ form.stock }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_imagen">Imagen</label>
+                        {{ form.imagen }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_categoria">Categoría</label>
+                        {{ form.categoria }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_oferta">¿Tiene oferta?</label>
+                        {{ form.oferta }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_precio_oferta">Precio en oferta</label>
+                        {{ form.precio_oferta }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_limite_oferta">Límite de oferta</label>
+                        {{ form.limite_oferta }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_oferta_restante">Oferta restante</label>
+                        {{ form.oferta_restante }}
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Guardar</button>
+                        <a href="{% url 'gestion_admin:admin_panel' %}" class="button-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </main>
 </body>

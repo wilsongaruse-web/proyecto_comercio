@@ -21,16 +21,16 @@
         </div>
     </header>
 
-    <main>
-        <div class="container">
-            <h2>¿Seguro que deseas eliminar este producto?</h2>
-            <p><strong>{{ producto.nombre }}</strong></p>
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn-volver" style="background:#b42318;">Sí, eliminar</button>
-                <a href="{% url 'gestion_admin:productos_admin' %}" class="btn-comprar">Cancelar</a>
-            </form>
-        </div>
-    </main>
-</body>
-</html>
+        <main>
+            <div class="container">
+                <h2>¿Seguro que deseas eliminar este producto?</h2>
+                <p><strong>{{ producto.nombre }}</strong></p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" >Sí, eliminar</button>
+                    <a href="{% url 'gestion_admin:productos_admin' %}" class="button-secondary">Cancelar</a>
+                </form>
+            </div>
+        </main>
+    </body>
+    </html>
