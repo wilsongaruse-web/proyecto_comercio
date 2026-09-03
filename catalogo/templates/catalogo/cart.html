@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras - Don Empanada</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-warning shadow-sm mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-dark fs-4" href="#">
+            <img src="{% static 'carrito/img/logo.png' %}" alt="Logo Don Empanada" class="me-2" height="35">
+            Don Empanada
+        </a>
+    </div>
+</nav>
+
+<div class="container my-4">
+    <div class="row g-4">
+        <!-- Tabla del Resumen de Productos -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4 text-dark"><i class="bi bi-cart3 me-2"></i>Resumen de Tu Pedido</h4>
+                    
+                    {% if items %}
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Empanada</th>
+                                    <th class="text-center">Precio Unitario</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-end">Subtotal</th>
+                                    <th class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                <tr>
+                                    <td class="fw-semibold text-dark">{{ item.producto.nombre }}</td>
+                                    <td class="text-center">${{ item.producto.precio|floatformat:0 }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2 fs-6">{{ item.cantidad }}</span>
+                                    </td>
+                                    <td class="text-end fw-bold text-success">${{ item.subtotal|floatformat:0 }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'eliminar_del_carrito' item.id %}" class="btn btn-outline-danger btn-sm rounded-circle">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info rounded-4 text-center py-4">
+                        <i class="bi bi-cart-x fs-1 d-block mb-2"></i>
+                        Tu carrito está vacío. ¡Agrega algunas empanadas abajo!
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 gap-2">
+                        <a href="/" class="btn btn-outline-secondary rounded-pill px-4">
+                            <i class="bi bi-house-door me-1"></i> Volver al Inicio
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Catálogo Rápido para Pruebas de Selección -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-plus-circle me-2"></i>Agregar Empanadas al Carrito</h5>
+                    <div class="row g-3">
+                        {% for prod in productos %}
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 d-flex justify-content-between align-items-center bg-white shadow-sm">
+                                <div>
+                                    <h6 class="fw-bold mb-1">{{ prod.nombre }}</h6>
+                                    <span class="text-success fw-bold">${{ prod.precio|floatformat:0 }}</span>
+                                </div>
+                                <a href="{% url 'agregar_al_carrito' prod.id %}" class="btn btn-sm btn-warning rounded-pill px-3 fw-bold">
+                                    + Agregar
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted small">No hay productos creados aún en la base de datos.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Lateral: Total y Pago -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 bg-white">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Total a Pagar</h5>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal:</span>
+                        <span class="fw-semibold">${{ total|floatformat:0 }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Domicilio:</span>
+                        <span class="text-success fw-semibold">Gratis</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fs-5 fw-bold">Total:</span>
+                        <span class="fs-4 fw-bold text-success">${{ total|floatformat:0 }}</span>
+                    </div>
+                    <button class="btn btn-warning w-100 fw-bold py-2 rounded-pill shadow-sm">
+                        Confirmar Pedido <i class="bi bi-check-circle ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

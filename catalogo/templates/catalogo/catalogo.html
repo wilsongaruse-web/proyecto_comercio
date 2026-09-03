@@ -15,7 +15,7 @@
             </a>
             <h1 class="brand-title">Empanadas ED</h1>
             <nav class="site-nav">
-                <a href="{% url 'catalogo:catalogo' %}">Ver Carrito</a>
+                <a href="{% url 'catalogo:ver_carrito' %}" class="...">Ver Carrito</a>
                 <a href="#">Iniciar Sesión</a>
                 <a href="#" class="cta-link">Registrarse</a>
             </nav>
@@ -40,7 +40,7 @@
                     <h2>Catálogo de Productos</h2>
                     <p>Filtra por categoría, ordena por precio y agrega tus favoritos al carrito.</p>
                 </div>
-                <a href="#" class="btn-carrito" id="carritoButton">
+                <a href="{% url 'catalogo:ver_carrito' %}" class="btn-carrito" id="carritoButton">
                     🛒 Ver Carrito
                     <span class="carrito-badge" id="carrito-badge">0</span>
                 </a>

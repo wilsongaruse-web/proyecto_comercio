@@ -19,3 +19,14 @@ class Producto(models.Model):
         if self.oferta and self.precio_oferta and self.oferta_restante:
             return self.precio_oferta
         return self.precio
+
+
+class CarritoItem(models.Model):
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+
+    def subtotal(self):
+        return self.producto.precio * self.cantidad
+
+    def __str__(self):
+        return f"{self.cantidad}x {self.producto.nombre}"
