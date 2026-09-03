@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo | Empanadas ED</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio">
+                <img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED">
+            </a>
+            <h1 class="brand-title">Empanadas ED</h1>
+            <nav class="site-nav">
+                <a href="{% url 'catalogo:catalogo' %}">Ver Carrito</a>
+                <a href="#">Iniciar Sesión</a>
+                <a href="#" class="cta-link">Registrarse</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+        <div class="hero-content">
+            <p class="eyebrow">Catálogo</p>
+            <h1>Encuentra tus empanadas favoritas</h1>
+            <p>Descubre sabores clásicos y ofertas exclusivas en una experiencia visual fresca y elegante.</p>
+            
+        </div>
+        
+    </section>
+
+    <main>
+        <div class="page-card">
+            <div class="catalog-top">
+                <div>
+                    <h2>Catálogo de Productos</h2>
+                    <p>Filtra por categoría, ordena por precio y agrega tus favoritos al carrito.</p>
+                </div>
+                <a href="#" class="btn-carrito" id="carritoButton">
+                    🛒 Ver Carrito
+                    <span class="carrito-badge" id="carrito-badge">0</span>
+                </a>
+            </div>
+
+            <a href="{% url 'home' %}" class="btn-volver">← Volver al inicio</a>
+
+            <form id="filterForm" class="catalog-filters">
+                <div>
+                    <label for="categoria">Categoría</label>
+                    <select id="categoria" name="categoria">
+                        <option value="">Todas</option>
+                        
+                    </select>
+                </div>
+                <div>
+                    <label for="sort">Ordenar por</label>
+                    <select id="sort" name="sort">
+                        <option value="ofertas">Ofertas primero</option>
+                        <option value="nombre">Nombre A-Z</option>
+                        <option value="precio_asc">Precio: menor a mayor</option>
+                        <option value="precio_desc">Precio: mayor a menor</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:14px; align-items:flex-end; flex-wrap: wrap;">
+                    <button type="submit" class="btn-comprar">Aplicar</button>
+                    <button type="button" id="resetFilters" class="btn-volver" style="background:white; border:1px solid #D32F2F; color:#D32F2F;">Limpiar</button>
+                </div>
+            </form>
+
+            <div class="productos-grid" id="productosGrid">
+                {% for producto in productos %}
+                    <article class="producto-card">
+                        <img
+                            class="producto-img"
+                            src="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'ed.jpeg' %}{% endif %}"
+                            alt="{{ producto.nombre }}"
+                        >
+                        <div class="card-body">
+                            <div class="meta-row">
+                                <span class="category-pill">{{ producto.categoria }}</span>
+                            </div>
+                            <h3>{{ producto.nombre }}</h3>
+
+                            {% if producto.oferta and producto.precio_oferta %}
+                                <div class="sale-badge">Oferta</div>
+                                <div class="precio-group">
+                                    <span class="precio-oferta">${{ producto.precio_oferta }}</span>
+                                    <span class="precio-normal">${{ producto.precio }}</span>
+                                </div>
+                            {% else %}
+                                <div class="precio-group">
+                                    <span class="precio-oferta">${{ producto.precio }}</span>
+                                </div>
+                            {% endif %}
+
+                            <div class="stock {% if producto.stock <= 5 %}bajo{% endif %}">
+                                Stock disponible: {{ producto.stock }}
+                            </div>
+
+                            <div class="card-actions">
+                                <button type="button" class="btn-comprar">Agregar al carrito</button>
+                            </div>
+                        </div>
+                    </article>
+                {% empty %}
+                    <p>No hay productos disponibles por el momento.</p>
+                {% endfor %}
+            </div>
+
+            <div class="modal" id="cartModal" aria-hidden="true">
+                <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="cartModalTitle">
+                    <button class="modal-close" id="closeCartModal" aria-label="Cerrar carrito">×</button>
+                    <h2 id="cartModalTitle">Tu carrito</h2>
+                    <div id="cartItemsContainer" style="margin-top: 22px;"></div>
+                    <div class="cart-summary">
+                        <p style="margin: 0; font-size: 1rem; color: #333;">Total:&nbsp;<strong id="cartTotal">$0</strong></p>
+                        <div class="cart-actions">
+                            <button type="button" class="btn-volver" id="clearCartButton">Vaciar carrito</button>
+                            <button type="button" class="btn-comprar" id="checkoutButton">Finalizar compra</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 - Empanadas ED - Todos los derechos reservados</p>
+        <p style="margin: 8px 0 0; color: #bbb;">Hecho con ❤️ para nuestros clientes</p>
+    </footer>
+</body>
+</html>

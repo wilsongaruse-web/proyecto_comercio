@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>panel de administrador</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio">
+                <img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED">
+            </a>
+            <h1 class="brand-title">Empanadas ED</h1>
+            <nav class="site-nav">
+                <a href="{% url 'home' %} ">Inicio</a>
+                <a href="{% url 'catalogo:catalogo' %}">Catálogo</a>
+                <a href="#">Cerrar sesión</a>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+            <section class="hero">
+            <h1>Panel de Administrador</h1>
+            <p>Bienvenido, <strong>{{ request.user.get_username }}</strong></p>
+        </div>
+
+        <div class="admin-grid">
+            <div class="admin-card">
+                <h2>👤 Crear Admin</h2>
+                <p>Registra nuevos administradores en el sistema</p>
+                <a href="#" class="btn btn-primary">Crear</a>
+            </div>
+
+            <div class="admin-card">
+                <h2>📦 Gestionar Productos</h2>
+                <p>Agrega, edita o elimina productos del catálogo</p>
+                <a href="{% url 'gestion_admin:productos_admin' %}" class="btn btn-primary">Gestionar</a>
+            </div>
+
+            <div class="admin-card">
+                <h2>📊 Reportes</h2>
+                <p>Consulta reportes de ventas y estadísticas</p>
+                <a href="#" class="btn btn-primary">Ver</a>
+            </div>
+
+            
+
+            <div class="admin-card">
+                <h2>🏷️ Ofertas</h2>
+                <p>Crea y administra ofertas especiales</p>
+                <a href="#" class="btn btn-primary">Gestionar</a>
+            </div>
+
+            <div class="admin-card">
+                <h2> Historial de Inventario</h2>
+                <p>Revisa ingresos, salidas y ajustes de stock con usuario y motivo.</p>
+                <a href="#" class="btn btn-primary">Ver historial</a>
+            </div>
+
+            <div class="admin-card">
+                <h2>💳 Pagos</h2>
+                <p>Revisa los pagos de clientes en tienda</p>
+                <a href="/pagos_tienda_admin" class="btn btn-primary">Ver</a>
+            </div>
+        </div>
+
+        <a href="{% url 'home' %}" class="back-button">← Volver al inicio</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 - Empanadas ED - Panel Administrativo</p>
+    </footer>
+</body>
+</html>

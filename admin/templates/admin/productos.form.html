@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }} | Administración</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+     <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio">
+                <img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED">
+            </a>
+            
+            <h1 class="brand-title">Gestión de productos</h1>
+            <nav class="site-nav">
+                <a href="{% url 'gestion_admin:productos_admin' %}">Volver</a>
+                <a href="#">Cerrar sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="auth-shell">
+            <div class="auth-card">
+                <h2>Registrar nuevo producto</h2>
+                <form method="post" enctype="multipart/form-data" class="form-grid">
+                    {% csrf_token %}
+                    
+                    <div class="form-field">
+                        <label for="id_nombre">Nombre</label>
+                        {{ form.nombre }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_precio">Precio</label>
+                        {{ form.precio }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_stock">Stock</label>
+                        {{ form.stock }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_imagen">Imagen</label>
+                        {{ form.imagen }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_categoria">Categoría</label>
+                        {{ form.categoria }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_oferta">¿Tiene oferta?</label>
+                        {{ form.oferta }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_precio_oferta">Precio en oferta</label>
+                        {{ form.precio_oferta }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_limite_oferta">Límite de oferta</label>
+                        {{ form.limite_oferta }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="id_oferta_restante">Oferta restante</label>
+                        {{ form.oferta_restante }}
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Guardar</button>
+                        <a href="{% url 'gestion_admin:admin_panel' %}" class="button-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
