@@ -25,7 +25,7 @@
     <main>
         <div class="container">
             <h2>{{ titulo }}</h2>
-            <form method="post" class="form-login" style="max-width: 700px;">
+            <form method="post" enctype="multipart/form-data" class="form-login" style="max-width: 700px;">
                 {% csrf_token %}
                 {% for field in form %}
                     <div class="campo">

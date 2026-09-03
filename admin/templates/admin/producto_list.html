@@ -24,9 +24,14 @@
     <main>
         <div class="container">
             {% if messages %}
-                {% for message in messages %}
-                    <p class="mensaje">{{ message }}</p>
-                {% endfor %}
+                <div class="modal show" id="mensajeModal">
+                    <div class="modal-content">
+                        <button class="modal-close" onclick="cerrarModal()">×</button>
+                        {% for message in messages %}
+                            <p class="message {{ message.tags }}">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
             {% endif %}
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin: 20px 0;">
@@ -54,8 +59,8 @@
                             <td style="padding:10px; border-top:1px solid #eee;">{{ producto.stock }}</td>
                             <td style="padding:10px; border-top:1px solid #eee;">{% if producto.oferta %}Sí{% else %}No{% endif %}</td>
                             <td style="padding:10px; border-top:1px solid #eee;">
-                                <a href="{% url 'gestion_admin:producto_editar' producto.id %}" class="btn-volver">Editar</a>
-                                <a href="{% url 'gestion_admin:producto_eliminar' producto.id %}" class="btn-volver" style="background:#b42318;">Eliminar</a>
+                                <a href="{% url 'gestion_admin:producto_editar' producto.id %}" class="btn-editar">Editar</a>
+                                <a href="{% url 'gestion_admin:producto_eliminar' producto.id %}" class="btn-eliminar">Eliminar</a>
                             </td>
                         </tr>
                     {% empty %}
@@ -67,5 +72,10 @@
             </table>
         </div>
     </main>
+    <script>
+        function cerrarModal() {
+            document.getElementById("mensajeModal").classList.remove("show");
+        }
+    </script>
 </body>
 </html>

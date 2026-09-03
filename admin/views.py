@@ -37,9 +37,11 @@ def admin_login(request):
     return render(request, "admin/login.html", {"form": form, "titulo": "Login administrativo"})
 
 
+
 @admin_required
 def admin_panel(request):
-    return redirect("gestion_admin:productos_admin")
+    return render(request, "admin/admin_panel.html")
+
 
 
 
@@ -48,6 +50,7 @@ def admin_panel(request):
 def productos_admin(request):
     productos = Producto.objects.all().order_by("nombre")
     return render(request, "admin/producto_list.html", {"productos": productos})
+
 
 
 @admin_required
@@ -62,6 +65,7 @@ def producto_nuevo(request):
         form = ProductoForm()
 
     return render(request, "admin/productos.form.html", {"form": form, "titulo": "Nuevo producto"})
+
 
 
 

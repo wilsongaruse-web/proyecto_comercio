@@ -16,7 +16,7 @@
             <h1 class="brand-title">Empanadas ED</h1>
             <nav class="site-nav">
                 <a href="{% url 'catalogo:catalogo' %}">Catálogo</a>
-                <a href="#">Iniciar Sesión</a>
+                <a href="{% url 'gestion_admin:login' %}">Iniciar Sesión</a>
                 <a href="#" class="cta-link">Registrarse</a>
             </nav>
         </div>
@@ -75,7 +75,7 @@
             <div class="cta-section">
                 <h2>Nuestro Catálogo</h2>
                 <p>Descubre nuestra variedad de deliciosas empanadas con rellenos tradicionales e innovadores y más productos.</p>
-                <a href="#" class="btn btn-primary">Explorar Ahora</a>
+                <a href="{% url 'catalogo:catalogo' %}" class="btn btn-primary">Explorar Ahora</a>
             </div>
 
             <h2 class="section-title">Información</h2>
