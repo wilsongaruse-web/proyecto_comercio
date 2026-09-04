@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -95,3 +97,64 @@ def producto_eliminar(request, producto_id):
         return redirect("gestion_admin:productos_admin")
 
     return render(request, "admin/productos_confirmar_delete.html", {"producto": producto})
+
+
+@admin_required
+def ofertas_admin(request):
+    productos = Producto.objects.all().order_by("nombre")
+    selected_id = request.GET.get("producto_id") or request.POST.get("producto_id")
+    selected = get_object_or_404(Producto, pk=selected_id) if selected_id else None
+    max_ofertas = Producto.objects.filter(oferta=True).count()
+
+    if request.method == "POST":
+        producto_id = request.POST.get("producto_id")
+        if not producto_id:
+            messages.error(request, "Debes seleccionar un producto para gestionar su oferta.")
+            return render(
+                request,
+                "admin/ofertas.html",
+                {
+                    "productos": productos,
+                    "selected": selected,
+                    "selected_id": selected_id,
+                    "max_ofertas": max_ofertas,
+                },
+            )
+    
+        producto = get_object_or_404(Producto, pk=producto_id)
+        activar_oferta = request.POST.get("oferta") == "on"
+        precio_oferta = request.POST.get("precio_oferta")
+        limite_oferta = request.POST.get("limite_oferta")
+
+        if activar_oferta:
+            if not precio_oferta:
+                messages.error(request, "Debes ingresar un precio para la oferta.")
+            elif not limite_oferta or int(limite_oferta) < 1:
+                messages.error(request, "El límite de oferta debe ser mayor a cero.")
+            else:
+                producto.oferta = True
+                producto.precio_oferta = Decimal(precio_oferta)
+                producto.limite_oferta = int(limite_oferta)
+                producto.oferta_restante = int(limite_oferta)
+                producto.save()
+                messages.success(request, f"Oferta guardada para '{producto.nombre}'.")
+                return redirect("gestion_admin:ofertas_admin")
+        else:
+            producto.oferta = False
+            producto.precio_oferta = None
+            producto.limite_oferta = None
+            producto.oferta_restante = None
+            producto.save()
+            messages.success(request, f"Oferta desactivada para '{producto.nombre}'.")
+            return redirect("gestion_admin:ofertas_admin")
+
+        selected = producto
+        selected_id = producto.pk
+
+    context = {
+        "productos": productos,
+        "selected": selected,
+        "selected_id": selected_id,
+        "max_ofertas": max_ofertas,
+    }
+    return render(request, "admin/ofertas.html", context)

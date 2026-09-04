@@ -42,6 +42,7 @@
             <table style="width:100%; border-collapse:collapse; background:#fff; border-radius:12px; overflow:hidden;">
                 <thead>
                     <tr style="background:#f7f7f7;">
+                        <th style="padding:10px; text-align:left;">ID</th>
                         <th style="padding:10px; text-align:left;">Nombre</th>
                         <th style="padding:10px; text-align:left;">Categoría</th>
                         <th style="padding:10px; text-align:left;">Precio</th>
@@ -53,6 +54,7 @@
                 <tbody>
                     {% for producto in productos %}
                         <tr>
+                            <td style="padding:10px; border-top:1px solid #eee;">{{ producto.id }}</td>
                             <td style="padding:10px; border-top:1px solid #eee;">{{ producto.nombre }}</td>
                             <td style="padding:10px; border-top:1px solid #eee;">{{ producto.categoria }}</td>
                             <td style="padding:10px; border-top:1px solid #eee;">${{ producto.precio }}</td>

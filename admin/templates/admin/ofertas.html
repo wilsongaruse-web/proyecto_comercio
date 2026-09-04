@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }} | Administración</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+     <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio">
+                <img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED">
+            </a>
+            
+            <h1 class="brand-title">Gestionar Ofertas</h1>
+            <nav class="site-nav">
+                <a href="{% url 'gestion_admin:admin_panel' %}">Panel</a>
+                <a href="#">Cerrar sesión</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <h2 >Configuración de Ofertas</h2>
+        <p style="color: #666; font-size: 0.9em;">Máximo de ofertas activas: <strong>{{ max_ofertas }}</strong></p>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="get" style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px;">
+            <label for="producto_id">Seleccionar producto:</label>
+            <select id="producto_id" name="producto_id" required style="padding: 8px; width: 100%; margin-top: 8px;">
+                <option value="">-- Seleccione un producto --</option>
+                {% for producto in productos %}
+                    <option value="{{ producto.id }}" {% if selected and selected.id == producto.id %}selected{% endif %}>
+                        {{ producto.nombre }} - ${{ producto.precio }}{% if producto.oferta %} (Oferta ${{ producto.precio_oferta }}){% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" style="margin-top: 12px; padding: 10px 20px; background: #2196F3; color: white; border: none; border-radius: 5px; cursor: pointer;">Cargar producto</button>
+        </form>
+
+        {% if selected %}
+            <form method="post" style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px;">
+                {% csrf_token %}
+                <input type="hidden" name="producto_id" value="{{ selected.id }}">
+
+                <label style="display: block; margin-bottom: 12px;">
+                    <input type="checkbox" name="oferta" {% if selected.oferta %}checked{% endif %}> Activar oferta
+                </label>
+
+                <label style="display: block; margin-bottom: 12px;">
+                    Precio de oferta:
+                    <input type="number" step="0.01" name="precio_oferta" value="{{ selected.precio_oferta|default_if_none:'' }}" style="padding: 8px; width: 100%;">
+                </label>
+
+                <label style="display: block; margin-bottom: 12px;">
+                    Límite de unidades de oferta:
+                    <input type="number" name="limite_oferta" min="1" value="{{ selected.limite_oferta|default_if_none:'' }}" style="padding: 8px; width: 100%;">
+                </label>
+
+                {% if selected.oferta and selected.oferta_restante is not None %}
+                    <p>Unidades restantes en oferta: {{ selected.oferta_restante }}</p>
+                {% endif %}
+
+                <button type="submit" class="btn-comprar" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Guardar oferta</button>
+            </form>
+        {% endif %}
+
+        {% if productos %}
+            <h3 style="margin-top: 30px;">Productos existentes</h3>
+            <table style="width:100%; border-collapse:collapse; background:#fff; border-radius:12px; overflow:hidden;">
+                <thead>
+                    <tr style="background:#f7f7f7;">
+                        <th style="padding:10px; text-align:left;">ID</th>
+                        <th style="padding:10px; text-align:left;">Nombre</th>
+                        <th style="padding:10px; text-align:left;">Precio</th>
+                        <th style="padding:10px; text-align:left;">Stock</th>
+                        <th style="padding:10px; text-align:left;">Oferta</th>
+                        <th style="padding:10px; text-align:left;">Precio oferta</th>
+                        <th style="padding:10px; text-align:left;">Restan</th>
+                        <th style="padding:10px; text-align:left;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    
+                        <tr>
+                            <td style="padding:10px; border-top:1px solid #eee;">{{ producto.id }}</td>
+                            <td style="padding:10px; border-top:1px solid #eee;">{{ producto.nombre }}</td>
+                            <td style="padding:10px; border-top:1px solid #eee;">${{ producto.precio }}</td>
+                            <td style="padding:10px; border-top:1px solid #eee;">{{ producto.stock }}</td>
+                            <td style="padding:10px; border-top:1px solid #eee;">{% if producto.oferta %}Sí{% else %}No{% endif %}</td>
+                            <td style="padding:10px; border-top:1px solid #eee;">                            
+                                {% if producto.precio_oferta %}
+                                    <span style="color: red; font-weight: bold;">${{ producto.precio_oferta }}</span>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{% if producto.oferta %}{{ producto.oferta_restante|default:0 }}{% else %}-{% endif %}</td>
+                            <td>
+                                <a href="{% url 'gestion_admin:ofertas_admin' %}?producto_id={{ producto.id }}" class="text-link">Seleccionar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </main>
+    <footer>
+        <p>© 2026 - productos artesanales y ofertas especiales.</p>
+    </footer>
+</body>
+</html>
+
+<thead>
+                    
+                       
