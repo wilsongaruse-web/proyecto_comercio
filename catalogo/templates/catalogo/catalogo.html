@@ -102,7 +102,11 @@
                             </div>
 
                             <div class="card-actions">
-                                <button type="button" class="btn-comprar">Agregar al carrito</button>
+                                <form action="{% url 'catalogo:agregar_al_carrito' producto.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="cantidad" value="1">
+                                    <button type="submit" class="btn-comprar">Agregar al carrito</button>
+                                </form>
                             </div>
                         </div>
                     </article>

@@ -4,130 +4,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito de Compras - Don Empanada</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <title>Carrito de Compras | Empanadas ED</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
-<body class="bg-light">
+<body>
+    <!-- Cabecera idéntica a la del catálogo -->
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'catalogo:catalogo' %}" class="logo-button" aria-label="Volver al catálogo">
+                <img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED">
+            </a>
+            <h1 class="brand-title">Empanadas ED</h1>
+            <nav class="site-nav">
+                <a href="{% url 'catalogo:catalogo' %}">Catálogo</a>
+                <a href="#">Iniciar Sesión</a>
+                <a href="#" class="cta-link">Registrarse</a>
+            </nav>
+        </div>
+    </header>
 
-<nav class="navbar navbar-dark bg-warning shadow-sm mb-4">
-    <div class="container">
-        <a class="navbar-brand fw-bold text-dark fs-4" href="#">
-            <img src="{% static 'carrito/img/logo.png' %}" alt="Logo Don Empanada" class="me-2" height="35">
-            Don Empanada
-        </a>
-    </div>
-</nav>
-
-<div class="container my-4">
-    <div class="row g-4">
-        <!-- Tabla del Resumen de Productos -->
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4">
-                    <h4 class="fw-bold mb-4 text-dark"><i class="bi bi-cart3 me-2"></i>Resumen de Tu Pedido</h4>
-                    
-                    {% if items %}
-                    <div class="table-responsive">
-                        <table class="table align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Empanada</th>
-                                    <th class="text-center">Precio Unitario</th>
-                                    <th class="text-center">Cantidad</th>
-                                    <th class="text-end">Subtotal</th>
-                                    <th class="text-center">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in items %}
-                                <tr>
-                                    <td class="fw-semibold text-dark">{{ item.producto.nombre }}</td>
-                                    <td class="text-center">${{ item.producto.precio|floatformat:0 }}</td>
-                                    <td class="text-center">
-                                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2 fs-6">{{ item.cantidad }}</span>
-                                    </td>
-                                    <td class="text-end fw-bold text-success">${{ item.subtotal|floatformat:0 }}</td>
-                                    <td class="text-center">
-                                        <a href="{% url 'eliminar_del_carrito' item.id %}" class="btn btn-outline-danger btn-sm rounded-circle">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% else %}
-                    <div class="alert alert-info rounded-4 text-center py-4">
-                        <i class="bi bi-cart-x fs-1 d-block mb-2"></i>
-                        Tu carrito está vacío. ¡Agrega algunas empanadas abajo!
-                    </div>
-                    {% endif %}
-
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 gap-2">
-                        <a href="/" class="btn btn-outline-secondary rounded-pill px-4">
-                            <i class="bi bi-house-door me-1"></i> Volver al Inicio
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Catálogo Rápido para Pruebas de Selección -->
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body p-4">
-                    <h5 class="fw-bold mb-3"><i class="bi bi-plus-circle me-2"></i>Agregar Empanadas al Carrito</h5>
-                    <div class="row g-3">
-                        {% for prod in productos %}
-                        <div class="col-md-6">
-                            <div class="p-3 border rounded-3 d-flex justify-content-between align-items-center bg-white shadow-sm">
-                                <div>
-                                    <h6 class="fw-bold mb-1">{{ prod.nombre }}</h6>
-                                    <span class="text-success fw-bold">${{ prod.precio|floatformat:0 }}</span>
-                                </div>
-                                <a href="{% url 'agregar_al_carrito' prod.id %}" class="btn btn-sm btn-warning rounded-pill px-3 fw-bold">
-                                    + Agregar
-                                </a>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <p class="text-muted small">No hay productos creados aún en la base de datos.</p>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+    <main class="container" style="max-width: 1000px; margin: 30px auto; padding: 0 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Tu Carrito de Compras</h2>
+            <a href="{% url 'catalogo:catalogo' %}" class="button-secondary" style="text-decoration: none;">← Volver al catálogo</a>
         </div>
 
-        <!-- Columna Lateral: Total y Pago -->
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 bg-white">
-                <div class="card-body p-4">
-                    <h5 class="fw-bold mb-3">Total a Pagar</h5>
-                    <hr>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Subtotal:</span>
-                        <span class="fw-semibold">${{ total|floatformat:0 }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-3">
-                        <span class="text-muted">Domicilio:</span>
-                        <span class="text-success fw-semibold">Gratis</span>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between mb-4">
-                        <span class="fs-5 fw-bold">Total:</span>
-                        <span class="fs-4 fw-bold text-success">${{ total|floatformat:0 }}</span>
-                    </div>
-                    <button class="btn btn-warning w-100 fw-bold py-2 rounded-pill shadow-sm">
-                        Confirmar Pedido <i class="bi bi-check-circle ms-1"></i>
+        {% if items %}
+            <div style="background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #eee; text-align: left;">
+                            <th style="padding: 12px;">Producto</th>
+                            <th style="padding: 12px; text-align: center;">Precio Unitario</th>
+                            <th style="padding: 12px; text-align: center;">Cantidad</th>
+                            <th style="padding: 12px; text-align: right;">Subtotal</th>
+                            <th style="padding: 12px; text-align: center;">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px; font-weight: bold;">{{ item.producto.nombre }}</td>
+                                <td style="padding: 12px; text-align: center;">${{ item.producto.precio_actual|floatformat:0 }}</td>
+                                <td style="padding: 12px; text-align: center;">
+                                    <span style="background: #fff3cd; color: #856404; padding: 4px 12px; border-radius: 20px; font-weight: bold;">
+                                        {{ item.cantidad }}
+                                    </span>
+                                </td>
+                                <td style="padding: 12px; text-align: right; color: #28a745; font-weight: bold;">
+                                    ${{ item.subtotal|floatformat:0 }}
+                                </td>
+                                <td style="padding: 12px; text-align: center;">
+                                    <a href="{% url 'catalogo:eliminar_del_carrito' item.id %}" 
+                                       style="color: #dc3545; text-decoration: none; font-size: 1.2rem; font-weight: bold;" 
+                                       title="Eliminar producto">
+                                       ✕
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 25px; padding-top: 15px; border-top: 2px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                    <h3>Total a pagar: <span style="color: #d9534f;">${{ total|floatformat:0 }}</span></h3>
+                    <button class="btn-comprar" style="padding: 10px 25px; font-size: 1rem; cursor: pointer;">
+                        Proceder al Pago
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        {% else %}
+            <div style="background: #fff; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                <p style="font-size: 1.2rem; color: #666; margin-bottom: 20px;">Tu carrito está actualmente vacío.</p>
+                <a href="{% url 'catalogo:catalogo' %}" class="btn-comprar" style="text-decoration: none; padding: 10px 20px; display: inline-block;">
+                    Explorar Catálogo
+                </a>
+            </div>
+        {% endif %}
+    </main>
 </body>
 </html>

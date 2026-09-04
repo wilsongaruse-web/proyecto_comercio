@@ -1,5 +1,4 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto, CarritoItem
 
 
@@ -13,19 +12,21 @@ def ver_carrito(request):
     return render(request, 'catalogo/cart.html', {'items': items, 'total': total})
 
 def agregar_al_carrito(request, producto_id):
-    producto = get_object_or_404(Producto, id=producto_id)
-    cantidad_ingresada = int(request.POST.get('cantidad', 1))
-    
-    item, creado = CarritoItem.objects.get_or_create(producto=producto)
-    if creado:
-        item.cantidad = cantidad_ingresada
-    else:
-        item.cantidad += cantidad_ingresada
+    if request.method == 'POST':
+        producto = get_object_or_404(Producto, id=producto_id)
+        cantidad_ingresada = int(request.POST.get('cantidad', 1))
         
-    item.save()
-    return redirect('ver_carrito')
+        item, creado = CarritoItem.objects.get_or_create(producto=producto)
+        if creado:
+            item.cantidad = cantidad_ingresada
+        else:
+            item.cantidad += cantidad_ingresada
+            
+        item.save()
+        
+    return redirect('catalogo:ver_carrito')  # Usa el namespace 'catalogo:'
 
 def eliminar_del_carrito(request, item_id):
     item = get_object_or_404(CarritoItem, id=item_id)
     item.delete()
-    return redirect('ver_carrito')
+    return redirect('catalogo:ver_carrito')  # Usa el namespace 'catalogo:'
