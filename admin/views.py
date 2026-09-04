@@ -7,7 +7,10 @@ from django.shortcuts import get_object_or_404, redirect, render
 from catalogo.models import Producto
 
 from .forms import ProductoForm
-
+# app registro
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 def admin_required(view_func):
     @login_required(login_url="/panel-admin/login/")
@@ -95,3 +98,5 @@ def producto_eliminar(request, producto_id):
         return redirect("gestion_admin:productos_admin")
 
     return render(request, "admin/productos_confirmar_delete.html", {"producto": producto})
+
+

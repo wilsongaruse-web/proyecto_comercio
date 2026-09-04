@@ -33,12 +33,21 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
 INSTALLED_APPS = [
     'catalogo.apps.CatalogoConfig',
     'admin.apps.AdminConfig',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+   
+    
+    
+    
+
+    
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

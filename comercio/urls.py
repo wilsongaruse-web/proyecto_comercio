@@ -23,6 +23,8 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('catalogo/', include('catalogo.urls')),
     path('panel-admin/', include('admin.urls', namespace='gestion_admin')),
+    path('registro/', views.registro, name='registro'),
+    path('resenas/', views.resenas, name='resenas'),
 ]
 
 if settings.DEBUG:

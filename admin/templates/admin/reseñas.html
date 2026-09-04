@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }} | Reseñas clientes</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- formulario reseñas --> 
+
+    <form action="{% url 'resenas' %}" method="POST">
+        {% csrf_token %}
+        <main>
+            <div class="page">
+
+                <label for="username">Deja reseña de tu experiencia</label>
+                <br>
+                <textarea class="review-field" id="username" name="username" rows="8" required minlength="3" placeholder="Escribe tu reseña aquí..."></textarea>
+                <br>
+                <button type="submit">Comentar</button>
+            </div>
+        </main>
+    </form>
+</body>
+</html>
