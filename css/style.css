@@ -531,16 +531,9 @@ footer {
   .auth-shell { padding: 0; }
 }
 
-/* styles para reseñas */ 
-
-.review-field {
-  width: 100%;
-  max-width: 800px;    
-  height: 200px;       
-  min-height: 120px;   
-  padding: 14px;
-  font: inherit;
-  line-height: 1.5;
-  resize: vertical;    
-  box-sizing: border-box;
+canvas {
+  background: white;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 12px;
 }
