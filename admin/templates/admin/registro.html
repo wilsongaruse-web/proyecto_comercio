@@ -25,32 +25,35 @@
             </div>
         {% endfor %}
     {% endif %}
+    <center><h1>Crear cuenta</h1></center>
 
+<center><div class="card">
     <form action="{% url 'registro' %}" method="POST">
         {% csrf_token %}
         <main>
         <div class="page">
-            <label for="username">Nombre de usuario</label>
+            <label for="username"><b>Nombre de usuario</b></label>
             <input type="text" id="username" name="username" required minlength="3">
         </div>
 
         <div>
-            <label for="email">Correo electrónico</label>
+            <label for="email"><b>Correo electrónico</b></label>
             <input type="email" id="email" name="email" required>
         </div>
 
         <div>
-            <label for="password">Contraseña</label>
+            <label for="password"><b>Contraseña</b></label>
             <input type="password" id="password" name="password" required minlength="8">
         </div>
 
         <div>
-            <label for="confirm_password">Confirmar contraseña</label>
+            <label for="confirm_password"><b>Confirmar contraseña</b></label>
             <input type="password" id="confirm_password" name="confirm_password" required>
         </div>
 
         <button type="submit">Crear cuenta</button>
-    </form>
+    </form> </center>
+  </div>
 </main>
 </body>
 </html>
