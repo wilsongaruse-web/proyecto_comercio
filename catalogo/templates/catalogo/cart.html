@@ -1,12 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito de Compras | Empanadas ED</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
+
 <body>
     <!-- Cabecera idéntica a la del catálogo -->
     <header class="site-header">
@@ -26,61 +28,86 @@
     <main class="container" style="max-width: 1000px; margin: 30px auto; padding: 0 20px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2>Tu Carrito de Compras</h2>
-            <a href="{% url 'catalogo:catalogo' %}" class="button-secondary" style="text-decoration: none;">← Volver al catálogo</a>
+            <a href="{% url 'catalogo:catalogo' %}" class="button-secondary" style="text-decoration: none;">← Volver al
+                catálogo</a>
         </div>
 
         {% if items %}
-            <div style="background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="border-bottom: 2px solid #eee; text-align: left;">
-                            <th style="padding: 12px;">Producto</th>
-                            <th style="padding: 12px; text-align: center;">Precio Unitario</th>
-                            <th style="padding: 12px; text-align: center;">Cantidad</th>
-                            <th style="padding: 12px; text-align: right;">Subtotal</th>
-                            <th style="padding: 12px; text-align: center;">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in items %}
-                            <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 12px; font-weight: bold;">{{ item.producto.nombre }}</td>
-                                <td style="padding: 12px; text-align: center;">${{ item.producto.precio_actual|floatformat:0 }}</td>
-                                <td style="padding: 12px; text-align: center;">
-                                    <span style="background: #fff3cd; color: #856404; padding: 4px 12px; border-radius: 20px; font-weight: bold;">
-                                        {{ item.cantidad }}
-                                    </span>
-                                </td>
-                                <td style="padding: 12px; text-align: right; color: #28a745; font-weight: bold;">
-                                    ${{ item.subtotal|floatformat:0 }}
-                                </td>
-                                <td style="padding: 12px; text-align: center;">
-                                    <a href="{% url 'catalogo:eliminar_del_carrito' item.id %}" 
-                                       style="color: #dc3545; text-decoration: none; font-size: 1.2rem; font-weight: bold;" 
-                                       title="Eliminar producto">
-                                       ✕
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <div
+            style="background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #eee; text-align: left;">
+                        <th style="padding: 12px;">Producto</th>
+                        <th style="padding: 12px; text-align: center;">Precio Unitario</th>
+                        <th style="padding: 12px; text-align: center;">Cantidad</th>
+                        <th style="padding: 12px; text-align: right;">Subtotal</th>
+                        <th style="padding: 12px; text-align: center;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 12px; font-weight: bold;">{{ item.producto.nombre }}</td>
+                        <td style="padding: 12px; text-align: center;">${{ item.producto.precio_actual|floatformat:0 }}
+                        </td>
 
-                <div style="margin-top: 25px; padding-top: 15px; border-top: 2px solid #eee; display: flex; justify-content: space-between; align-items: center;">
-                    <h3>Total a pagar: <span style="color: #d9534f;">${{ total|floatformat:0 }}</span></h3>
-                    <button class="btn-comprar" style="padding: 10px 25px; font-size: 1rem; cursor: pointer;">
-                        Proceder al Pago
-                    </button>
-                </div>
+                        <td style="padding: 12px; text-align: center;">
+                            <div style="display: inline-flex; align-items: center; gap: 8px;">
+                                <!-- Botón Menos (-) -->
+                                <a href="{% url 'catalogo:disminuir_cantidad' item.id %}"
+                                    style="background: #e0e0e0; color: #333; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; font-size: 14px;">
+                                    -
+                                </a>
+
+
+                                <span
+                                    style="background: #fff3cd; color: #856404; padding: 4px 12px; border-radius: 20px; font-weight: bold;">
+                                    {{ item.cantidad }}
+                                </span>
+
+                                <!-- Botón Más (+) -->
+                                <a href="{% url 'catalogo:aumentar_cantidad' item.id %}"
+                                    style="background: #e0e0e0; color: #333; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; font-size: 14px;">
+                                    +
+                                </a>
+                            </div>
+
+                        </td>
+                        <td style="padding: 12px; text-align: right; color: #28a745; font-weight: bold;">
+                            ${{ item.subtotal|floatformat:0 }}
+                        </td>
+                        <td style="padding: 12px; text-align: center;">
+                            <a href="{% url 'catalogo:eliminar_del_carrito' item.id %}"
+                                style="color: #dc3545; text-decoration: none; font-size: 1.2rem; font-weight: bold;"
+                                title="Eliminar producto">
+                                ✕
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div
+                style="margin-top: 25px; padding-top: 15px; border-top: 2px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                <h3>Total a pagar: <span style="color: #d9534f;">${{ total|floatformat:0 }}</span></h3>
+                <button class="btn-comprar" style="padding: 10px 25px; font-size: 1rem; cursor: pointer;">
+                    Proceder al Pago
+                </button>
             </div>
+        </div>
         {% else %}
-            <div style="background: #fff; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-                <p style="font-size: 1.2rem; color: #666; margin-bottom: 20px;">Tu carrito está actualmente vacío.</p>
-                <a href="{% url 'catalogo:catalogo' %}" class="btn-comprar" style="text-decoration: none; padding: 10px 20px; display: inline-block;">
-                    Explorar Catálogo
-                </a>
-            </div>
+        <div
+            style="background: #fff; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <p style="font-size: 1.2rem; color: #666; margin-bottom: 20px;">Tu carrito está actualmente vacío.</p>
+            <a href="{% url 'catalogo:catalogo' %}" class="btn-comprar"
+                style="text-decoration: none; padding: 10px 20px; display: inline-block;">
+                Explorar Catálogo
+            </a>
+        </div>
         {% endif %}
     </main>
 </body>
+
 </html>

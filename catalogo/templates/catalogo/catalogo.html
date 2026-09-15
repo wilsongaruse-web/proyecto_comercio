@@ -1,12 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo | Empanadas ED</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
+
 <body>
     <header class="site-header">
         <div class="header-inner">
@@ -24,61 +26,71 @@
 
     <main>
         <section class="hero">
-        <div class="hero-content">
-            <p class="eyebrow">Catálogo</p>
-            <h1>Encuentra tus empanadas favoritas</h1>
-            <p>Descubre sabores clásicos y ofertas exclusivas en una experiencia visual fresca y elegante.</p>
-            
-        </div>
-        
-    </section>
+            <div class="hero-content">
+                <p class="eyebrow">Catálogo</p>
+                <h1>Encuentra tus empanadas favoritas</h1>
+                <p>Descubre sabores clásicos y ofertas exclusivas en una experiencia visual fresca y elegante.</p>
 
-    <main>
-        <div class="page-card">
-            <div class="catalog-top">
-                <div>
-                    <h2>Catálogo de Productos</h2>
-                    <p>Filtra por categoría, ordena por precio y agrega tus favoritos al carrito.</p>
-                </div>
-                <a href="{% url 'catalogo:ver_carrito' %}" class="btn-carrito" id="carritoButton">
-                    🛒 Ver Carrito
-                    <span class="carrito-badge" id="carrito-badge">0</span>
-                </a>
             </div>
 
-            <a href="{% url 'home' %}" class="btn-volver">← Volver al inicio</a>
+        </section>
 
-            <form id="filterForm" class="catalog-filters">
-                <div>
-                    <label for="categoria">Categoría</label>
-                    <select id="categoria" name="categoria">
-                        <option value="">Todas</option>
-                        
-                    </select>
+        <main>
+            <div class="page-card">
+                {% if messages %}
+                <div style="margin-bottom: 20px;">
+                    {% for message in messages %}
+                    <div
+                        style="padding: 12px 20px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 8px; font-weight: bold;">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
                 </div>
-                <div>
-                    <label for="sort">Ordenar por</label>
-                    <select id="sort" name="sort">
-                        <option value="ofertas">Ofertas primero</option>
-                        <option value="nombre">Nombre A-Z</option>
-                        <option value="precio_asc">Precio: menor a mayor</option>
-                        <option value="precio_desc">Precio: mayor a menor</option>
-                    </select>
-                </div>
-                <div style="display:flex; gap:14px; align-items:flex-end; flex-wrap: wrap;">
-                    <button type="submit" class="btn-comprar">Aplicar</button>
-                    <button type="button" id="resetFilters" class="btn-volver" style="background:white; border:1px solid #D32F2F; color:#D32F2F;">Limpiar</button>
-                </div>
-            </form>
+                {% endif %}
 
-            <div class="productos-grid" id="productosGrid">
-                {% for producto in productos %}
+                <div class="catalog-top">
+                    <div>
+                        <h2>Catálogo de Productos</h2>
+                        <p>Filtra por categoría, ordena por precio y agrega tus favoritos al carrito.</p>
+                    </div>
+                    <a href="{% url 'catalogo:ver_carrito' %}" class="btn-carrito" id="carritoButton">
+                        🛒 Ver Carrito
+                        <span class="carrito-badge" id="carrito-badge">0</span>
+                    </a>
+                </div>
+
+                <a href="{% url 'home' %}" class="btn-volver">← Volver al inicio</a>
+
+                <form id="filterForm" class="catalog-filters">
+                    <div>
+                        <label for="categoria">Categoría</label>
+                        <select id="categoria" name="categoria">
+                            <option value="">Todas</option>
+
+                        </select>
+                    </div>
+                    <div>
+                        <label for="sort">Ordenar por</label>
+                        <select id="sort" name="sort">
+                            <option value="ofertas">Ofertas primero</option>
+                            <option value="nombre">Nombre A-Z</option>
+                            <option value="precio_asc">Precio: menor a mayor</option>
+                            <option value="precio_desc">Precio: mayor a menor</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; gap:14px; align-items:flex-end; flex-wrap: wrap;">
+                        <button type="submit" class="btn-comprar">Aplicar</button>
+                        <button type="button" id="resetFilters" class="btn-volver"
+                            style="background:white; border:1px solid #D32F2F; color:#D32F2F;">Limpiar</button>
+                    </div>
+                </form>
+
+                <div class="productos-grid" id="productosGrid">
+                    {% for producto in productos %}
                     <article class="producto-card">
-                        <img
-                            class="producto-img"
+                        <img class="producto-img"
                             src="{% if producto.imagen %}{{ producto.imagen.url }}{% else %}{% static 'ed.jpeg' %}{% endif %}"
-                            alt="{{ producto.nombre }}"
-                        >
+                            alt="{{ producto.nombre }}">
                         <div class="card-body">
                             <div class="meta-row">
                                 <span class="category-pill">{{ producto.categoria }}</span>
@@ -86,55 +98,121 @@
                             <h3>{{ producto.nombre }}</h3>
 
                             {% if producto.oferta and producto.precio_oferta %}
-                                <div class="sale-badge">Oferta</div>
-                                <div class="precio-group">
-                                    <span class="precio-oferta">${{ producto.precio_oferta }}</span>
-                                    <span class="precio-normal">${{ producto.precio }}</span>
-                                </div>
+                            <div class="sale-badge">Oferta</div>
+                            <div class="precio-group">
+                                <span class="precio-oferta">${{ producto.precio_oferta }}</span>
+                                <span class="precio-normal">${{ producto.precio }}</span>
+                            </div>
                             {% else %}
-                                <div class="precio-group">
-                                    <span class="precio-oferta">${{ producto.precio }}</span>
-                                </div>
+                            <div class="precio-group">
+                                <span class="precio-oferta">${{ producto.precio }}</span>
+                            </div>
                             {% endif %}
 
-                            <div class="stock {% if producto.stock <= 5 %}bajo{% endif %}">
-                                Stock disponible: {{ producto.stock }}
+                            <!-- Mostrar stock disponible restando lo que ya se agregó al carrito -->
+                            <div class="stock {% if producto.disponible_restante <= 2 %}bajo{% endif %}">
+                                Stock disponible: {{ producto.disponible_restante }}
+                                {% if producto.en_carrito > 0 %}
+                                <small style="display:block; color: #666;">({{ producto.en_carrito }} en tu
+                                    carrito)</small>
+                                {% endif %}
                             </div>
 
                             <div class="card-actions">
+                                {% if producto.disponible_restante > 0 %}
                                 <form action="{% url 'catalogo:agregar_al_carrito' producto.id %}" method="POST">
                                     {% csrf_token %}
                                     <input type="hidden" name="cantidad" value="1">
                                     <button type="submit" class="btn-comprar">Agregar al carrito</button>
                                 </form>
+                                {% else %}
+                                <button type="button" class="btn-comprar"
+                                    style="background-color: #cccccc; cursor: not-allowed;" disabled>
+                                    {% if producto.stock == 0 %}Agotado{% else %}Límite alcanzado{% endif %}
+                                </button>
+                                {% endif %}
                             </div>
                         </div>
                     </article>
-                {% empty %}
+                    {% empty %}
                     <p>No hay productos disponibles por el momento.</p>
-                {% endfor %}
-            </div>
+                    {% endfor %}
+                </div>
 
-            <div class="modal" id="cartModal" aria-hidden="true">
-                <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="cartModalTitle">
-                    <button class="modal-close" id="closeCartModal" aria-label="Cerrar carrito">×</button>
-                    <h2 id="cartModalTitle">Tu carrito</h2>
-                    <div id="cartItemsContainer" style="margin-top: 22px;"></div>
-                    <div class="cart-summary">
-                        <p style="margin: 0; font-size: 1rem; color: #333;">Total:&nbsp;<strong id="cartTotal">$0</strong></p>
-                        <div class="cart-actions">
-                            <button type="button" class="btn-volver" id="clearCartButton">Vaciar carrito</button>
-                            <button type="button" class="btn-comprar" id="checkoutButton">Finalizar compra</button>
+                <div class="modal" id="cartModal" aria-hidden="true">
+                    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="cartModalTitle">
+                        <button class="modal-close" id="closeCartModal" aria-label="Cerrar carrito">×</button>
+                        <h2 id="cartModalTitle">Tu carrito</h2>
+                        <div id="cartItemsContainer" style="margin-top: 22px;"></div>
+                        <div class="cart-summary">
+                            <p style="margin: 0; font-size: 1rem; color: #333;">Total:&nbsp;<strong
+                                    id="cartTotal">$0</strong></p>
+                            <div class="cart-actions">
+                                <button type="button" class="btn-volver" id="clearCartButton">Vaciar carrito</button>
+                                <button type="button" class="btn-comprar" id="checkoutButton">Finalizar compra</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <footer>
-        <p>&copy; 2026 - Empanadas ED - Todos los derechos reservados</p>
-        <p style="margin: 8px 0 0; color: #bbb;">Hecho con ❤️ para nuestros clientes</p>
-    </footer>
+        <footer>
+            <p>&copy; 2026 - Empanadas ED - Todos los derechos reservados</p>
+            <p style="margin: 8px 0 0; color: #bbb;">Hecho con ❤️ para nuestros clientes</p>
+        </footer>
+
+        <script>
+            document.querySelectorAll('.card-actions form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault(); // Evita la recarga completa de la página
+
+                    const formData = new FormData(this);
+                    const actionUrl = this.action;
+
+                    fetch(actionUrl, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // Muestra una notificación emergente sutil sin mover el scroll
+                                const btn = this.querySelector('button');
+                                const originalText = btn.textContent;
+
+                                btn.textContent = '¡Agregado! ✓';
+                                btn.style.backgroundColor = '#28a745';
+
+                                setTimeout(() => {
+                                    btn.textContent = originalText;
+                                    btn.style.backgroundColor = '';
+                                }, 1500);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
+            });
+        </script>
+
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const scrollPosition = localStorage.getItem("scrollPos");
+                if (scrollPosition) {
+                    window.scrollTo(0, scrollPosition);
+                    localStorage.removeItem("scrollPos");
+                }
+            });
+
+            window.addEventListener("beforeunload", function () {
+                localStorage.setItem("scrollPos", window.scrollY);
+            });
+        </script>
+
+
 </body>
+
 </html>
