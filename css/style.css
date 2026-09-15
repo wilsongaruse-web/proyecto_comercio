@@ -62,7 +62,8 @@ img { max-width: 100%; display: block; }
   text-align: center;
 }
 .site-nav { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-.site-nav a {
+.site-nav a,
+.site-nav-link {
   color: var(--primary);
   text-decoration: none;
   font-weight: 700;
@@ -70,8 +71,13 @@ img { max-width: 100%; display: block; }
   border-radius: 999px;
   transition: background 0.2s ease, color 0.2s ease;
   font-size: 1.1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
-.site-nav a:hover { background: rgba(211,47,47,0.08); }
+.site-nav a:hover,
+.site-nav-link:hover { background: rgba(211,47,47,0.08); }
 .site-nav .cta-link {
   background: var(--primary);
   color: white;
