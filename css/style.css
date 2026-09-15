@@ -544,3 +544,30 @@ footer {
   resize: vertical;    
   box-sizing: border-box;
 }
+card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 7.5px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    /* MODIFICA EL TAMAÑO AQUÍ */
+    width: 100%;             /* Se adapta al contenedor */
+    max-width: 250px;        /* Cambia este valor (ej. 400px más pequeña, 700px más grande) */
+    margin: 0 auto;          /* Para mantenerla centrada */
+    box-sizing: border-box;
+  
+    * Fuerza a que la etiqueta ocupe una línea propia y empuje el input hacia abajo */
+label {
+  display: block !important;
+  width: 100% !important;
+  text-align: right !important;
+  margin-bottom: 6px !important;
+  font-weight: 700;
+}
+
+/* Fuerza al input a ir abajo e iniciar en una nueva línea */
+input {
+  display: block !important;
+  width: 100% !important;
+  clear: both;
+}
+}
