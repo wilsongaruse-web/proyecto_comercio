@@ -1,14 +1,14 @@
 from decimal import Decimal
 
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import get_object_or_404, redirect, render
 
 from catalogo.models import Producto
 
-from .forms import ProductoForm
+from .forms import AdminUserCreationForm, ProductoForm
 
 
 def admin_required(view_func):
@@ -39,10 +39,33 @@ def admin_login(request):
     return render(request, "admin/login.html", {"form": form, "titulo": "Login administrativo"})
 
 
+def admin_logout(request):
+    logout(request)
+    return redirect("gestion_admin:login")
+
+
 
 @admin_required
 def admin_panel(request):
     return render(request, "admin/admin_panel.html")
+
+
+@admin_required
+def usuario_nuevo(request):
+    if not request.user.is_superuser:
+        messages.error(request, "Solo un superusuario puede crear administradores.")
+        return redirect("gestion_admin:admin_panel")
+
+    if request.method == "POST":
+        form = AdminUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, f"Usuario '{user.username}' creado correctamente.")
+            return redirect("gestion_admin:admin_panel")
+    else:
+        form = AdminUserCreationForm()
+
+    return render(request, "admin/usuario_form.html", {"form": form})
 
 
 

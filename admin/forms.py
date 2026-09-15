@@ -1,6 +1,39 @@
 from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import Group
 
 from catalogo.models import Producto
+
+
+class AdminUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=False, label="Correo electrónico")
+    is_staff = forms.BooleanField(
+        required=False,
+        initial=True,
+        label="Puede acceder al panel administrativo",
+    )
+    groups = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all(),
+        required=False,
+        label="Roles",
+        help_text="Los permisos de cada rol se gestionan desde los grupos de Django.",
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta(UserCreationForm.Meta):
+        model = get_user_model()
+        fields = ("username", "email", "is_staff", "groups")
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data["email"]
+        user.is_staff = self.cleaned_data["is_staff"]
+        user.is_superuser = False
+        if commit:
+            user.save()
+            self.save_m2m()
+        return user
 
 
 class ProductoForm(forms.ModelForm):

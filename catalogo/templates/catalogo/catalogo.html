@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo | Empanadas ED</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=popup2">
 </head>
 <body>
     <header class="site-header">
@@ -23,6 +23,36 @@
     </header>
 
     <main>
+        {% if ofertas %}
+            <div class="offer-popup" id="offerPopup" role="dialog" aria-modal="true" aria-labelledby="offerPopupTitle">
+                <div class="offer-popup-content">
+                    <button type="button" class="offer-popup-close" onclick="cerrarOfertaPopup()" aria-label="Cerrar ofertas">×</button>
+                    <span class="offer-popup-kicker">Oferta especial</span>
+                    <h2 id="offerPopupTitle">¡Hay productos en oferta!</h2>
+                    <p class="offer-popup-intro">Aprovecha estos precios antes de que se agoten.</p>
+                    <div class="offer-popup-list">
+                        {% for oferta in ofertas %}
+                            <div class="offer-popup-item">
+                                <img
+                                    class="offer-popup-image"
+                                    src="{% if oferta.imagen %}{{ oferta.imagen.url }}{% else %}{% static 'ed.jpeg' %}{% endif %}"
+                                    alt="{{ oferta.nombre }}"
+                                >
+                                <div>
+                                    <strong>{{ oferta.nombre }}</strong>
+                                    <span>Quedan {{ oferta.oferta_restante }} unidades</span>
+                                </div>
+                                <div class="offer-popup-price">
+                                    <strong>${{ oferta.precio_oferta }}</strong>
+                                    <del>${{ oferta.precio }}</del>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="btn-comprar offer-popup-action" onclick="cerrarOfertaPopup()">Ver catálogo</button>
+                </div>
+            </div>
+        {% endif %}
         <section class="hero">
         <div class="hero-content">
             <p class="eyebrow">Catálogo</p>
@@ -132,5 +162,19 @@
         <p>&copy; 2026 - Empanadas ED - Todos los derechos reservados</p>
         <p style="margin: 8px 0 0; color: #bbb;">Hecho con ❤️ para nuestros clientes</p>
     </footer>
+    <script>
+        function cerrarOfertaPopup() {
+            const popup = document.getElementById("offerPopup");
+            if (popup) {
+                popup.remove();
+            }
+        }
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                cerrarOfertaPopup();
+            }
+        });
+    </script>
 </body>
 </html>

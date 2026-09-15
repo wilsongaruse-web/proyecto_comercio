@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ titulo }} | Administración</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=popup2">
 </head>
 <body>
      <header class="site-header">
@@ -26,11 +26,17 @@
         <p style="color: #666; font-size: 0.9em;">Máximo de ofertas activas: <strong>{{ max_ofertas }}</strong></p>
 
         {% if messages %}
-            <ul class="messages">
+            <div class="admin-popup" id="mensajeAlertas" aria-live="polite">
                 {% for message in messages %}
-                    <li class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+                    <div class="admin-alert {{ message.tags }}">
+                        <div class="admin-alert-copy">
+                            <strong>{% if 'success' in message.tags %}Mensaje de confirmación{% else %}Alerta{% endif %}</strong>
+                            <span>{{ message }}</span>
+                        </div>
+                        <button type="button" class="admin-alert-close" onclick="cerrarAlertas()" aria-label="Cerrar alerta">×</button>
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
         {% endif %}
 
         <form method="get" style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px;">
@@ -117,6 +123,16 @@
     <footer>
         <p>© 2026 - productos artesanales y ofertas especiales.</p>
     </footer>
+    <script>
+        function cerrarAlertas() {
+            const alertas = document.getElementById("mensajeAlertas");
+            if (alertas) {
+                alertas.remove();
+            }
+        }
+
+        window.setTimeout(cerrarAlertas, 5000);
+    </script>
 </body>
 </html>
 
