@@ -22,7 +22,7 @@ class Producto(models.Model):
 
 
 class CarritoItem(models.Model):
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, unique=True)
     cantidad = models.PositiveIntegerField(default=1)
 
     def subtotal(self):

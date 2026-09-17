@@ -1,21 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto, CarritoItem
 from django.contrib import messages
+from django.http import JsonResponse
 
 
 def catalogo(request):
     productos = Producto.objects.all().order_by('-id')
-    
-    # Obtener todas las cantidades guardadas actualmente en el carrito
     items_carrito = CarritoItem.objects.all()
+    total_items = items_carrito.count()
     cantidades_en_carrito = {item.producto_id: item.cantidad for item in items_carrito}
 
-    # Calcular para cada producto cuánto le queda realmente disponible al usuario
     for producto in productos:
         producto.en_carrito = cantidades_en_carrito.get(producto.id, 0)
         producto.disponible_restante = producto.stock - producto.en_carrito
 
-    return render(request, 'catalogo/catalogo.html', {'productos': productos})
+    return render(request, 'catalogo/catalogo.html', {'productos': productos, 'total_items': total_items})
 
 
 def ver_carrito(request):
@@ -30,26 +29,39 @@ def agregar_al_carrito(request, producto_id):
         cantidad_ingresada = int(request.POST.get('cantidad', 1))
 
         if producto.stock <= 0:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'error', 'message': 'Producto agotado'}, status=400)
             messages.error(request, f"El producto '{producto.nombre}' se encuentra agotado.")
             return redirect('catalogo:catalogo')
-        
-        item, creado = CarritoItem.objects.get_or_create(producto=producto)
 
-        cantidad_actual = 0 if creado else item.cantidad
-        nueva_cantidad = cantidad_actual + cantidad_ingresada
+        item = CarritoItem.objects.filter(producto=producto).first()
 
-        # Validación correcta del stock
+        if item:
+            nueva_cantidad = item.cantidad + cantidad_ingresada
+        else:
+            item = CarritoItem(producto=producto, cantidad=0)
+            nueva_cantidad = cantidad_ingresada
+
         if nueva_cantidad > producto.stock:
-            messages.warning(
-                request, 
-                f"No puedes agregar más unidades. El stock disponible de '{producto.nombre}' es de {producto.stock}."
-            )
-            # Si era nuevo y superó el stock, borramos el registro temporal
-            if creado:
-                item.delete()
+            # Si es una petición AJAX, solo retornamos el JSON sin crear un mensaje persistente en la sesión
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'error', 'message': 'Stock superado'}, status=400)
+            messages.warning(request, f"No hay más stock disponible para '{producto.nombre}'.")
         else:
             item.cantidad = nueva_cantidad
             item.save()
+
+            nuevo_total_carrito = CarritoItem.objects.count()
+
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'ok',
+                    'nombre': producto.nombre,
+                    'stock_restante': producto.stock - item.cantidad,
+                    'total_items': nuevo_total_carrito
+                })
+
+            # Solo creamos el mensaje flash si la recarga de la página es tradicional (SIN AJAX)
             messages.success(request, f"¡{producto.nombre} agregado al carrito!")
 
     return redirect('catalogo:catalogo')
