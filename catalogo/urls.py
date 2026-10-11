@@ -10,6 +10,11 @@ router=routers.DefaultRouter()
 router.register(r'catalogo',views.CatalogoViewSet)
 urlpatterns = [
     path('', views.catalogo, name='catalogo'),
+    path('registro/', views.registro_cliente, name='registro'),
+    path('ingresar/', views.login_cliente, name='login'),
+    path('salir/', views.logout_cliente, name='logout'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('pedido/<int:venta_id>/', views.pedido_confirmado, name='pedido_confirmado'),
     path('api/', include(router.urls)),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger/', SpectacularSwaggerView.as_view(url_name='catalogo:schema'), name='swagger-ui'),

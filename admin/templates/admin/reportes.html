@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes | Empanadas ED</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'gestion_admin:admin_panel' %}" class="logo-button" aria-label="Volver al panel">
+                <img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED">
+            </a>
+            <h1 class="brand-title">Reportes</h1>
+            <nav class="site-nav">
+                <a href="{% url 'gestion_admin:admin_panel' %}">Panel</a>
+                <a href="{% url 'gestion_admin:logout' %}">Cerrar sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-panel-container report-page">
+        <section class="admin-header report-heading">
+            <h1>Informes del negocio</h1>
+            <p>{{ desde|date:"d/m/Y" }} al {{ hasta|date:"d/m/Y" }}</p>
+            <div class="form-actions">
+                <a class="btn btn-primary" href="{% url 'gestion_admin:reportes_admin_pdf' %}?desde={{ desde|date:'Y-m-d' }}&amp;hasta={{ hasta|date:'Y-m-d' }}">Descargar PDF</a>
+                <a class="button-secondary" href="{% url 'gestion_admin:venta_nueva' %}">Registrar venta</a>
+                <a class="button-secondary" href="{% url 'gestion_admin:atencion_nueva' %}">Registrar atención</a>
+            </div>
+        </section>
+
+        {% if messages %}
+            {% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}
+        {% endif %}
+
+        <form method="get" class="report-filters">
+            <div class="form-field"><label for="id_desde">{{ form.desde.label }}</label>{{ form.desde }}{{ form.desde.errors }}</div>
+            <div class="form-field"><label for="id_hasta">{{ form.hasta.label }}</label>{{ form.hasta }}{{ form.hasta.errors }}</div>
+            <button class="btn btn-primary" type="submit">Aplicar período</button>
+        </form>
+
+        <section class="report-summary" aria-label="Resumen de ventas">
+            <div><span>Ventas</span><strong>{{ numero_ventas }}</strong></div>
+            <div><span>Ingresos</span><strong>${{ ingresos|floatformat:2 }}</strong></div>
+            <div><span>Unidades vendidas</span><strong>{{ unidades_vendidas }}</strong></div>
+            <div><span>Atenciones pendientes</span><strong>{{ atenciones_pendientes }}</strong></div>
+        </section>
+
+        <section class="report-section">
+            <h2>Ventas por mes</h2>
+            <div class="report-table-wrap"><table class="report-table">
+                <thead><tr><th>Mes</th><th>Pedidos</th><th>Ingresos</th></tr></thead>
+                <tbody>{% for fila in ventas_por_mes %}<tr><td>{{ fila.periodo|date:"F Y" }}</td><td>{{ fila.ventas }}</td><td>${{ fila.ingresos|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="3">Sin ventas en este período.</td></tr>{% endfor %}</tbody>
+            </table></div>
+        </section>
+
+        <section class="report-section">
+            <h2>Ventas por hora</h2>
+            <div class="report-table-wrap"><table class="report-table">
+                <thead><tr><th>Hora</th><th>Pedidos</th><th>Ingresos</th></tr></thead>
+                <tbody>{% for fila in ventas_por_hora %}<tr><td>{{ fila.hora|stringformat:"02d" }}:00</td><td>{{ fila.ventas }}</td><td>${{ fila.ingresos|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="3">Sin ventas en este período.</td></tr>{% endfor %}</tbody>
+            </table></div>
+        </section>
+
+        <section class="report-section">
+            <h2>Productos vendidos</h2>
+            <div class="report-table-wrap"><table class="report-table">
+                <thead><tr><th>Producto</th><th>Unidades</th><th>Ingresos</th></tr></thead>
+                <tbody>{% for fila in productos_vendidos %}<tr><td>{{ fila.nombre_producto }}</td><td>{{ fila.unidades }}</td><td>${{ fila.ingresos|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="3">Sin ventas registradas.</td></tr>{% endfor %}</tbody>
+            </table></div>
+        </section>
+
+        <section class="report-section">
+            <h2>Clientes por fecha de última compra</h2>
+            <div class="report-summary segment-summary">
+                {% for segmento, cantidad in segmentos.items %}<div><span>{{ segmento }}</span><strong>{{ cantidad }}</strong></div>{% endfor %}
+            </div>
+            <div class="report-table-wrap"><table class="report-table">
+                <thead><tr><th>Cliente</th><th>Última compra</th><th>Pedidos</th><th>Segmento</th></tr></thead>
+                <tbody>{% for cliente in clientes_recientes %}<tr><td>{{ cliente.nombre }}</td><td>{{ cliente.ultima_compra|date:"d/m/Y" }}</td><td>{{ cliente.pedidos }}</td><td>{{ cliente.segmento }}</td></tr>{% empty %}<tr><td colspan="4">Aún no hay clientes con ventas.</td></tr>{% endfor %}</tbody>
+            </table></div>
+        </section>
+
+        <section class="report-section">
+            <h2>Inventario en riesgo</h2>
+            <p>Productos con 5 unidades o menos; incluye existencias agotadas.</p>
+            <div class="report-table-wrap"><table class="report-table">
+                <thead><tr><th>Producto</th><th>Stock actual</th></tr></thead>
+                <tbody>{% for producto in inventario_riesgo %}<tr><td>{{ producto.nombre }}</td><td>{{ producto.stock }}</td></tr>{% empty %}<tr><td colspan="2">No hay productos bajo el umbral.</td></tr>{% endfor %}</tbody>
+            </table></div>
+        </section>
+
+        <section class="report-section">
+            <h2>Rotación estimada de stock</h2>
+            <p>Unidades vendidas divididas por inventario promedio estimado. Solo se calcula para períodos que terminan hoy y asume que no hubo reposiciones ni ajustes; los períodos históricos muestran N/D porque no hay historial de movimientos de inventario.</p>
+            <div class="report-table-wrap"><table class="report-table">
+                <thead><tr><th>Producto</th><th>Unidades vendidas</th><th>Stock actual</th><th>Rotación</th></tr></thead>
+                <tbody>{% for fila in rotacion %}<tr><td>{{ fila.nombre }}</td><td>{{ fila.unidades }}</td><td>{{ fila.stock_actual }}</td><td>{% if fila.rotacion is not None %}{{ fila.rotacion|floatformat:2 }}x{% else %}N/D{% endif %}</td></tr>{% empty %}<tr><td colspan="4">No hay productos registrados.</td></tr>{% endfor %}</tbody>
+            </table></div>
+        </section>
+
+        <section class="report-section">
+            <h2>Tiempo de respuesta al cliente</h2>
+            <p>Promedio hasta la primera respuesta dentro del período: {% if promedio_respuesta is not None %}{{ promedio_respuesta|floatformat:1 }} minutos{% else %}sin respuestas registradas{% endif %}. Respondidas: {{ atenciones_respondidas }}. Pendientes: {{ atenciones_pendientes }}.</p>
+        </section>
+    </main>
+</body>
+</html>

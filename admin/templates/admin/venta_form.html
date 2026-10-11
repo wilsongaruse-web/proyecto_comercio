@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar venta | Empanadas ED</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="site-header"><div class="header-inner">
+        <a href="{% url 'gestion_admin:admin_panel' %}" class="logo-button" aria-label="Volver al panel"><img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED"></a>
+        <h1 class="brand-title">Registrar venta</h1>
+        <nav class="site-nav"><a href="{% url 'gestion_admin:reportes_admin' %}">Reportes</a><a href="{% url 'gestion_admin:logout' %}">Cerrar sesión</a></nav>
+    </div></header>
+    <main class="auth-shell">
+        <section class="auth-card">
+            <h1>Nueva venta</h1>
+            <p>Al guardar, las unidades se descuentan del inventario.</p>
+            {% if messages %}{% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}{% endif %}
+            <form method="post" class="form-grid" id="venta-form">
+                {% csrf_token %}
+                {% for field in form %}<div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
+                {{ lineas.management_form }}
+                <h2>Productos</h2>
+                <div class="form-grid" id="venta-lineas">
+                    {% for linea in lineas %}<div class="sale-line">
+                        {% for field in linea %}<div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
+                    </div>{% endfor %}
+                </div>
+                <template id="linea-vacia"><div class="sale-line">
+                    {% for field in lineas.empty_form %}<div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}</div>{% endfor %}
+                </div></template>
+                <button type="button" class="button-secondary" id="agregar-linea">Agregar producto</button>
+                <div class="form-actions"><button class="btn btn-primary" type="submit">Guardar venta</button><a class="button-secondary" href="{% url 'gestion_admin:reportes_admin' %}">Cancelar</a></div>
+            </form>
+        </section>
+    </main>
+    <script>
+        const addLineButton = document.getElementById("agregar-linea");
+        const totalForms = document.getElementById("id_lineas-TOTAL_FORMS");
+        const lineContainer = document.getElementById("venta-lineas");
+        const emptyLineTemplate = document.getElementById("linea-vacia");
+        addLineButton.addEventListener("click", () => {
+            const index = Number(totalForms.value);
+            const line = emptyLineTemplate.innerHTML.replaceAll("__prefix__", index);
+            lineContainer.insertAdjacentHTML("beforeend", line);
+            totalForms.value = index + 1;
+        });
+    </script>
+</body>
+</html>

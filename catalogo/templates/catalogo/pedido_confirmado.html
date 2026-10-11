@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido #{{ venta.pk }} | Empanadas ED</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="site-header"><div class="header-inner">
+        <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio"><img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED"></a>
+        <h1 class="brand-title">Pedido registrado</h1>
+        <nav class="site-nav"><a href="{% url 'catalogo:catalogo' %}">Seguir comprando</a></nav>
+    </div></header>
+    <main class="auth-shell checkout-shell">
+        <section class="auth-card order-confirmation">
+            <p class="eyebrow">Pedido #{{ venta.pk }}</p>
+            <h2>Tu compra quedó registrada</h2>
+            <p>Hola, {{ venta.nombre_cliente }}. Conserva este número para consultar tu pedido.</p>
+            <div class="checkout-items">
+                {% for linea in lineas %}<div class="checkout-item"><span>{{ linea.cantidad }} x {{ linea.nombre_producto }}</span><strong>${{ linea.subtotal|floatformat:2 }}</strong></div>{% endfor %}
+                <div class="checkout-item checkout-grand-total"><span>Total</span><strong>${{ total|floatformat:2 }}</strong></div>
+            </div>
+            <a class="btn btn-primary whatsapp-order-link" href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer">Continuar por WhatsApp</a>
+            <p class="checkout-note">WhatsApp abrirá un mensaje con tu número de pedido y los productos. Pulsa “Enviar” allí para avisarnos y coordinar el seguimiento.</p>
+            <a class="text-link" href="{% url 'catalogo:catalogo' %}">Volver al catálogo</a>
+        </section>
+    </main>
+    <script>localStorage.removeItem("empanadasEdCart");</script>
+</body>
+</html>

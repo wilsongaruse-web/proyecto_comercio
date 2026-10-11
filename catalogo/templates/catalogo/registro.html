@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta | Empanadas ED</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="site-header"><div class="header-inner">
+        <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio"><img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED"></a>
+        <h1 class="brand-title">Crear cuenta</h1>
+        <nav class="site-nav"><a href="{% url 'catalogo:catalogo' %}">Catálogo</a><a href="{% url 'catalogo:login' %}">Iniciar sesión</a></nav>
+    </div></header>
+    <main class="auth-shell">
+        <section class="auth-card">
+            <h2>Datos de tu cuenta</h2>
+            <form method="post" class="form-grid">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+                {% for field in form %}<div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<small>{{ field.help_text|safe }}</small>{% endif %}{{ field.errors }}</div>{% endfor %}
+                <button type="submit" class="btn btn-primary">Crear cuenta</button>
+            </form>
+            <p>¿Ya tienes cuenta? <a class="text-link" href="{% url 'catalogo:login' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}">Inicia sesión</a></p>
+        </section>
+    </main>
+</body>
+</html>

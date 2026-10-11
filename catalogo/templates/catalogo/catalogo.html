@@ -15,9 +15,14 @@
             </a>
             <h1 class="brand-title">Empanadas ED</h1>
             <nav class="site-nav">
-                <a href="{% url 'catalogo:catalogo' %}">Ver Carrito</a>
-                <a href="#">Iniciar Sesión</a>
-                <a href="#" class="cta-link">Registrarse</a>
+                <a href="{% url 'catalogo:catalogo' %}">Catálogo</a>
+                {% if request.user.is_authenticated %}
+                    <span>Hola, {{ request.user.first_name|default:request.user.username }}</span>
+                    <form method="post" action="{% url 'catalogo:logout' %}">{% csrf_token %}<button class="text-link" type="submit">Cerrar sesión</button></form>
+                {% else %}
+                    <a href="{% url 'catalogo:login' %}">Iniciar sesión</a>
+                    <a href="{% url 'catalogo:registro' %}" class="cta-link">Registrarse</a>
+                {% endif %}
             </nav>
         </div>
     </header>
@@ -129,7 +134,15 @@
 
 
                             <div class="card-actions">
-                                <button type="button" class="btn-comprar">Agregar al carrito</button>
+                                <button
+                                    type="button"
+                                    class="btn-comprar add-to-cart"
+                                    data-product-id="{{ producto.pk }}"
+                                    data-name="{{ producto.nombre }}"
+                                    data-price="{{ producto.precio_actual }}"
+                                    data-stock="{{ producto.stock }}"
+                                    {% if producto.stock < 1 %}disabled{% endif %}
+                                >{% if producto.stock %}Agregar al carrito{% else %}Agotado{% endif %}</button>
                             </div>
                         </div>
                     </article>
@@ -142,6 +155,7 @@
                 <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="cartModalTitle">
                     <button class="modal-close" id="closeCartModal" aria-label="Cerrar carrito">×</button>
                     <h2 id="cartModalTitle">Tu carrito</h2>
+                    <p class="cart-feedback" id="cartFeedback" aria-live="polite"></p>
                     <div id="cartItemsContainer" style="margin-top: 22px;"></div>
                     <div class="cart-summary">
                         <p style="margin: 0; font-size: 1rem; color: #333;">Total:&nbsp;<strong id="cartTotal">$0</strong></p>
@@ -172,6 +186,153 @@
                 cerrarOfertaPopup();
             }
         });
+    </script>
+    <script>
+        (() => {
+            const storageKey = "empanadasEdCart";
+            const cartButton = document.getElementById("carritoButton");
+            const modal = document.getElementById("cartModal");
+            const closeButton = document.getElementById("closeCartModal");
+            const cartContainer = document.getElementById("cartItemsContainer");
+            const cartBadge = document.getElementById("carrito-badge");
+            const cartTotal = document.getElementById("cartTotal");
+            const feedback = document.getElementById("cartFeedback");
+            const cart = readCart();
+            const currency = new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 });
+
+            function readCart() {
+                try {
+                    return JSON.parse(localStorage.getItem(storageKey) || "{}");
+                } catch {
+                    return {};
+                }
+            }
+
+            function saveCart() {
+                localStorage.setItem(storageKey, JSON.stringify(cart));
+                renderCart();
+            }
+
+            function makeButton(label, className, onClick) {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = className;
+                button.textContent = label;
+                button.addEventListener("click", onClick);
+                return button;
+            }
+
+            function renderCart() {
+                cartContainer.replaceChildren();
+                const items = Object.values(cart);
+                cartBadge.textContent = items.reduce((sum, item) => sum + item.cantidad, 0);
+                const total = items.reduce((sum, item) => sum + Number(item.precio) * item.cantidad, 0);
+                cartTotal.textContent = currency.format(total);
+
+                if (!items.length) {
+                    const empty = document.createElement("p");
+                    empty.className = "cart-empty";
+                    empty.textContent = "Tu carrito está vacío.";
+                    cartContainer.append(empty);
+                    return;
+                }
+
+                items.forEach((item) => {
+                    const row = document.createElement("div");
+                    row.className = "cart-item";
+                    const info = document.createElement("div");
+                    info.className = "cart-item-info";
+                    const title = document.createElement("h3");
+                    title.className = "cart-item-title";
+                    title.textContent = item.nombre;
+                    const price = document.createElement("p");
+                    price.className = "cart-item-meta";
+                    price.textContent = `${currency.format(Number(item.precio))} por unidad`;
+                    info.append(title, price);
+
+                    const controls = document.createElement("div");
+                    controls.className = "cart-item-controls";
+                    const quantity = document.createElement("input");
+                    quantity.className = "cart-item-qty-input";
+                    quantity.type = "number";
+                    quantity.min = "1";
+                    quantity.max = String(item.stock);
+                    quantity.value = String(item.cantidad);
+                    quantity.setAttribute("aria-label", `Cantidad de ${item.nombre}`);
+                    quantity.addEventListener("change", () => {
+                        const next = Math.max(1, Math.min(Number(quantity.value) || 1, item.stock));
+                        cart[item.id].cantidad = next;
+                        feedback.textContent = next < Number(quantity.value) ? `Stock disponible: ${item.stock}.` : "";
+                        saveCart();
+                    });
+                    controls.append(quantity, makeButton("Quitar", "cart-item-remove", () => {
+                        delete cart[item.id];
+                        feedback.textContent = "";
+                        saveCart();
+                    }));
+                    row.append(info, controls);
+                    cartContainer.append(row);
+                });
+            }
+
+            function openCart(event) {
+                event.preventDefault();
+                modal.classList.add("show");
+                modal.setAttribute("aria-hidden", "false");
+                closeButton.focus();
+            }
+
+            function closeCart() {
+                modal.classList.remove("show");
+                modal.setAttribute("aria-hidden", "true");
+                cartButton.focus();
+            }
+
+            cartButton.addEventListener("click", openCart);
+            closeButton.addEventListener("click", closeCart);
+            modal.addEventListener("click", (event) => {
+                if (event.target === modal) closeCart();
+            });
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" && modal.classList.contains("show")) closeCart();
+            });
+
+            document.querySelectorAll(".add-to-cart").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const { productId, name, price, stock } = button.dataset;
+                    const previous = cart[productId]?.cantidad || 0;
+                    if (previous >= Number(stock)) {
+                        feedback.textContent = `Ya tienes todas las unidades disponibles de ${name} en el carrito.`;
+                        openCart(new Event("click", { cancelable: true }));
+                        return;
+                    }
+                    cart[productId] = {
+                        id: productId,
+                        nombre: name,
+                        precio: price,
+                        stock: Number(stock),
+                        cantidad: previous + 1,
+                    };
+                    feedback.textContent = `${name} se agregó al carrito.`;
+                    saveCart();
+                });
+            });
+
+            document.getElementById("clearCartButton").addEventListener("click", () => {
+                Object.keys(cart).forEach((id) => delete cart[id]);
+                feedback.textContent = "Carrito vacío.";
+                saveCart();
+            });
+            document.getElementById("checkoutButton").addEventListener("click", () => {
+                if (!Object.keys(cart).length) {
+                    feedback.textContent = "Agrega al menos un producto antes de finalizar.";
+                    return;
+                }
+                window.location.assign("{% url 'catalogo:checkout' %}");
+            });
+
+            renderCart();
+        })();
     </script>
 </body>
 </html>

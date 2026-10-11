@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión | Empanadas ED</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="site-header"><div class="header-inner">
+        <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio"><img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED"></a>
+        <h1 class="brand-title">Iniciar sesión</h1>
+        <nav class="site-nav"><a href="{% url 'catalogo:catalogo' %}">Catálogo</a><a href="{% url 'catalogo:registro' %}">Crear cuenta</a></nav>
+    </div></header>
+    <main class="auth-shell">
+        <section class="auth-card">
+            <h2>Bienvenido de nuevo</h2>
+            <form method="post" class="form-grid">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {% if form.non_field_errors %}<div class="message error">{{ form.non_field_errors }}</div>{% endif %}
+                {% for field in form %}<div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </form>
+            <p>¿Aún no tienes cuenta? <a class="text-link" href="{% url 'catalogo:registro' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Regístrate</a></p>
+        </section>
+    </main>
+</body>
+</html>

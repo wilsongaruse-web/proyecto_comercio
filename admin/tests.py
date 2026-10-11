@@ -2,8 +2,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
-from catalogo.models import Producto
+from catalogo.models import AtencionCliente, DetalleVenta, Producto, Venta
 
 
 class AdminOfertasTests(TestCase):
@@ -86,3 +87,109 @@ class AdminUsersTests(TestCase):
             panel_response,
             f"{reverse('gestion_admin:login')}?next={reverse('gestion_admin:admin_panel')}",
         )
+
+
+class ReportesAdminTests(TestCase):
+    def setUp(self):
+        User = get_user_model()
+        self.admin = User.objects.create_user(
+            username="reportes_admin",
+            password="clave-segura-123",
+            is_staff=True,
+        )
+        self.producto = Producto.objects.create(
+            nombre="Empanada de pollo",
+            precio=2500,
+            stock=10,
+        )
+        self.client.login(username="reportes_admin", password="clave-segura-123")
+
+    def test_registro_de_venta_guarda_detalles_y_descuenta_stock(self):
+        fecha = timezone.localtime().strftime("%Y-%m-%dT%H:%M")
+        response = self.client.post(
+            reverse("gestion_admin:venta_nueva"),
+            {
+                "nombre_cliente": "Ana Pérez",
+                "correo_cliente": "ana@example.com",
+                "fecha": fecha,
+                "lineas-TOTAL_FORMS": "2",
+                "lineas-INITIAL_FORMS": "0",
+                "lineas-0-producto": str(self.producto.pk),
+                "lineas-0-cantidad": "2",
+                "lineas-1-producto": str(self.producto.pk),
+                "lineas-1-cantidad": "1",
+            },
+        )
+
+        self.assertRedirects(response, reverse("gestion_admin:reportes_admin"))
+        venta = Venta.objects.get(nombre_cliente="Ana Pérez")
+        detalle = venta.detalles.get()
+        self.assertEqual(detalle.cantidad, 3)
+        self.assertEqual(detalle.precio_unitario, 2500)
+        self.producto.refresh_from_db()
+        self.assertEqual(self.producto.stock, 7)
+
+    def test_venta_con_stock_insuficiente_no_se_guarda(self):
+        response = self.client.post(
+            reverse("gestion_admin:venta_nueva"),
+            {
+                "nombre_cliente": "Ana Pérez",
+                "correo_cliente": "",
+                "fecha": timezone.localtime().strftime("%Y-%m-%dT%H:%M"),
+                "lineas-TOTAL_FORMS": "1",
+                "lineas-INITIAL_FORMS": "0",
+                "lineas-0-producto": str(self.producto.pk),
+                "lineas-0-cantidad": "11",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Venta.objects.count(), 0)
+        self.producto.refresh_from_db()
+        self.assertEqual(self.producto.stock, 10)
+
+    def test_reporte_muestra_metricas_y_descarga_pdf(self):
+        ahora = timezone.now()
+        venta = Venta.objects.create(
+            nombre_cliente="Luis Gómez",
+            correo_cliente="luis@example.com",
+            fecha=ahora,
+        )
+        DetalleVenta.objects.create(
+            venta=venta,
+            producto=self.producto,
+            nombre_producto=self.producto.nombre,
+            cantidad=2,
+            precio_unitario=2500,
+        )
+        AtencionCliente.objects.create(
+            nombre_cliente="Luis Gómez",
+            asunto="Consulta de pedido",
+            fecha_apertura=ahora - timezone.timedelta(hours=2),
+            primera_respuesta=ahora - timezone.timedelta(hours=1),
+        )
+        hoy = timezone.localdate().isoformat()
+        filtros = {"desde": hoy, "hasta": hoy}
+
+        response = self.client.get(reverse("gestion_admin:reportes_admin"), filtros)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["numero_ventas"], 1)
+        self.assertEqual(response.context["unidades_vendidas"], 2)
+        self.assertEqual(response.context["promedio_respuesta"], 60)
+        self.assertContains(response, "Empanada de pollo")
+
+        pdf_response = self.client.get(reverse("gestion_admin:reportes_admin_pdf"), filtros)
+        self.assertEqual(pdf_response.status_code, 200)
+        self.assertEqual(pdf_response["Content-Type"], "application/pdf")
+        self.assertTrue(pdf_response.content.startswith(b"%PDF"))
+
+    def test_rotacion_historica_no_se_calcula_con_stock_actual(self):
+        ayer = timezone.localdate() - timezone.timedelta(days=1)
+        response = self.client.get(
+            reverse("gestion_admin:reportes_admin"),
+            {"desde": ayer.isoformat(), "hasta": ayer.isoformat()},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.context["rotacion"][0]["rotacion"])

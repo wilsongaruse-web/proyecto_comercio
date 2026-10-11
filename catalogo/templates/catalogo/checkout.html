@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar compra | Empanadas ED</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="site-header"><div class="header-inner">
+        <a href="{% url 'home' %}" class="logo-button" aria-label="Volver al inicio"><img class="logo-image" src="{% static 'ed.jpeg' %}" alt="Logo de Empanadas ED"></a>
+        <h1 class="brand-title">Finalizar compra</h1>
+        <nav class="site-nav"><a href="{% url 'catalogo:catalogo' %}">Volver al catálogo</a></nav>
+    </div></header>
+    <main class="auth-shell checkout-shell">
+        <section class="auth-card">
+            <h2>Tu pedido</h2>
+            <p>Hola, {{ request.user.first_name|default:request.user.username }}. Revisa tu carrito antes de confirmar.</p>
+            {% if messages %}{% for message in messages %}<div class="message error">{{ message }}</div>{% endfor %}{% endif %}
+            <div id="checkout-items" class="checkout-items" aria-live="polite"></div>
+            <p class="checkout-total">Total <strong id="checkout-total">$0</strong></p>
+            <form method="post" id="checkout-form" class="form-grid">
+                {% csrf_token %}
+                <input type="hidden" name="carrito" id="checkout-cart">
+                <div class="form-field"><label for="{{ form.telefono.id_for_label }}">{{ form.telefono.label }}</label>{{ form.telefono }}{{ form.telefono.errors }}</div>
+                <button type="submit" class="btn btn-primary" id="confirm-order">Confirmar pedido</button>
+            </form>
+            <p class="checkout-note">Al confirmar, guardaremos tu pedido y actualizaremos las existencias. Después podrás enviarlo por WhatsApp para coordinar el seguimiento.</p>
+        </section>
+    </main>
+    {{ productos_json|json_script:"checkout-products" }}
+    <script>
+        (() => {
+            const key = "empanadasEdCart";
+            const products = JSON.parse(document.getElementById("checkout-products").textContent);
+            const productMap = new Map(products.map((product) => [String(product.id), product]));
+            let cart;
+            try {
+                cart = JSON.parse(localStorage.getItem(key) || "{}");
+            } catch {
+                cart = {};
+            }
+            const container = document.getElementById("checkout-items");
+            const hiddenCart = document.getElementById("checkout-cart");
+            const totalOutput = document.getElementById("checkout-total");
+            const submitButton = document.getElementById("confirm-order");
+            const currency = new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 });
+            const lines = [];
+            let total = 0;
+
+            Object.values(cart).forEach((item) => {
+                const product = productMap.get(String(item.id));
+                if (!product || product.stock < 1) return;
+                const quantity = Math.min(Math.max(Number(item.cantidad) || 1, 1), product.stock);
+                const unitPrice = Number(product.precio);
+                const subtotal = unitPrice * quantity;
+                total += subtotal;
+                lines.push({ id: product.id, cantidad: quantity });
+                const row = document.createElement("div");
+                row.className = "checkout-item";
+                const description = document.createElement("span");
+                description.textContent = `${quantity} x ${product.nombre}`;
+                const price = document.createElement("strong");
+                price.textContent = currency.format(subtotal);
+                row.append(description, price);
+                container.append(row);
+            });
+
+            totalOutput.textContent = currency.format(total);
+            hiddenCart.value = JSON.stringify(lines);
+            if (!lines.length) {
+                const empty = document.createElement("p");
+                empty.className = "cart-empty";
+                empty.textContent = "Tu carrito está vacío o sus productos ya no tienen existencias.";
+                container.append(empty);
+                submitButton.disabled = true;
+            }
+            document.getElementById("checkout-form").addEventListener("submit", (event) => {
+                if (!lines.length) event.preventDefault();
+                hiddenCart.value = JSON.stringify(lines);
+            });
+        })();
+    </script>
+</body>
+</html>
